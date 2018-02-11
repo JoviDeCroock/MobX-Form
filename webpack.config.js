@@ -15,7 +15,7 @@ module.exports = () => {
   plugins.push(new webpack.NamedModulesPlugin());
   plugins.push(new webpack.NoEmitOnErrorsPlugin());
   plugins.push(new HtmlWebpackPlugin({
-    title: 'React framework',
+    title: 'MobX Form',
   }));
   let devServer = {};
   let externals = {};
@@ -101,7 +101,7 @@ module.exports = () => {
     },
     output: {
       filename: 'index.js',
-      library: 'CodiflyReactFramework',
+      library: 'MobX-Form',
       libraryTarget: 'umd',
       path: path.resolve(__dirname, './dist'),
       publicPath: '/',
