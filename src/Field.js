@@ -1,46 +1,51 @@
-import { observable, action, computed } from 'mobx';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { observer } from 'mobx';
 
-export default class Field {
-  // Non-changing properties
-  fieldId;
-  placeholder;
+import Field from './Field';
 
-  // Changing properties
-  @observable value;
-  @observable label;
-  @observable error;
+const createField = (store) => {
+  @observer
+  class ComponentField extends Component {
+    static propTypes = {
+      C: PropTypes.node.isRequired,
+      fieldId: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+      placeholder: PropTypes.string,
+    }
 
-  // Options
-  @observable showError = true;
+    static defaultProps = {
+      placeholder: null,
+    }
 
-  // FieldStates
-  @observable isSubmitting = false;
-  @observable isPristine = true;
-  @observable isValidating = false;
+    constructor(props) {
+      super(props);
+      this.store = store;
+      const { fieldId, ...rest } = props;
+      this.field = new Field(fieldId, rest);
+      store.addField(props); // Add created field to our store
+    }
 
-  // Constructor for Field
-  constructor(id) {
-    this.fieldId = id;
+    render() {
+      const { C, fieldId, ...restProps } = this.props;
+      const { onChange } = this.store;
+      const storeField = this.store.fields[fieldId];
+      const { value } = storeField;
+
+      // Value and onChange passed by our Field/Form
+      const fieldProperties = {
+        onChange,
+        value,
+      };
+
+
+      return (
+        <C {...restProps} {...fieldProperties} />
+      );
+    }
   }
 
-  // Computed
-  @computed
-  get error() {
-    return this.showError ? (this.error || null) : null;
-  }
+  return ComponentField;
+};
 
-  @computed
-  get value() {
-    return this.value;
-  }
-
-  @computed
-  get isBusy() {
-    return (this.isSubmitting || this.isValidating);
-  }
-
-  // Actions
-  @action.bound onchange(newValue) {
-    this.value = newValue;
-  }
-}
+export default createField;
