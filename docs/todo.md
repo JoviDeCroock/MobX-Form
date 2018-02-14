@@ -11,6 +11,7 @@ TodoList
 - Form
   - handleSubmit
   - handleError
+  - iterate over initial values after Field creation
 - Validation
   - Internal (Validation out of the box?)
   - External lib support
