@@ -33,6 +33,7 @@
     "no-return-await": 0,
     "no-restricted-syntax": 0,
     "no-unused-expressions": ["error", { "allowTaggedTemplates": true }],
+    "guard-for-in": 0,
 
     "react/forbid-prop-types": 0,
     "react/require-default-props": 0,
