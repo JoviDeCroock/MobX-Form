@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { observer } from 'mobx';
+// import { observer } from 'mobx';
 
 import Field from './Field';
 
 const createField = (store) => {
-  @observer
+  // @observer
   class ComponentField extends Component {
     static propTypes = {
       C: PropTypes.node.isRequired,
@@ -31,6 +31,8 @@ const createField = (store) => {
       const { onChange } = this.store;
       const storeField = this.store.fields[fieldId];
       const { value } = storeField;
+
+      console.log(C);
 
       // Value and onChange passed by our Field/Form
       const fieldProperties = {
