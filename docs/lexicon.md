@@ -1,0 +1,3 @@
+- Consumer: the application using this library
+- FormComponent: the Component implementing our `Field`
+- Form: the form containing the `onSubmit`
