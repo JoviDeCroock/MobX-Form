@@ -1,2 +1,0 @@
-- A for mand a field can be classic MobX stores
-- We can have a Connector that can inject into the formComponent
