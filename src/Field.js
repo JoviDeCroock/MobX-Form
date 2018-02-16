@@ -1,53 +1,47 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-// import { observer } from 'mobx';
+import { observer } from 'mobx-react';
 
-import Field from './Field';
+import Field from './FieldStore';
 
-const createField = (store) => {
-  // @observer
-  class ComponentField extends Component {
-    static propTypes = {
-      C: PropTypes.node.isRequired,
-      fieldId: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-      placeholder: PropTypes.string,
-    }
-
-    static defaultProps = {
-      placeholder: null,
-    }
-
-    constructor(props) {
-      super(props);
-      this.store = store;
-      const { fieldId, ...rest } = props;
-      this.field = new Field(fieldId, rest);
-      store.addField(props); // Add created field to our store
-    }
-
-    render() {
-      const { C, fieldId, ...restProps } = this.props;
-      const { onChange } = this.store;
-      const storeField = this.store.fields[fieldId];
-      const { value } = storeField;
-
-      console.log(C);
-
-      // Value and onChange passed by our Field/Form
-      const fieldProperties = {
-        onChange,
-        value,
-      };
-
-
-      return (
-        <C {...restProps} {...fieldProperties} />
-      );
-    }
+@observer
+class ComponentField extends Component {
+  static propTypes = {
+    C: PropTypes.func.isRequired,
+    fieldId: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    placeholder: PropTypes.string,
+    store: PropTypes.object,
   }
 
-  return ComponentField;
-};
+  static defaultProps = {
+    placeholder: null,
+  }
 
-export default createField;
+  constructor(props) {
+    super(props);
+    this.store = props.store;
+    const { fieldId, ...rest } = props;
+    const field = new Field(fieldId, rest);
+    this.store.addField(field); // Add created field to our store
+  }
+
+  render() {
+    const { C, fieldId, ...restProps } = this.props;
+    const { onChange } = this.store;
+    const { value } = this.store.fields[fieldId];
+
+    // Value and onChange passed by our Field/Form
+    const fieldProperties = {
+      fieldId,
+      onChange,
+      value,
+    };
+
+    return (
+      <C {...restProps} {...fieldProperties} />
+    );
+  }
+}
+
+export default ComponentField;

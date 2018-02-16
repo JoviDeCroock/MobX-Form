@@ -1,21 +1,15 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { observer } from 'mobx-react';
 
 import FormStore from './FormStore';
 
-const createForm = (C) => {
-  const formStore = new FormStore();
-  // @observer
+const createForm = (C, handleSubmit) => {
+  const formStore = new FormStore(handleSubmit);
+  @observer
   class Form extends Component {
-    static propTypes = {
-      // Implies the root component
-      // C: PropTypes.node.isRequired,
-    }
-
     render() {
-      // const { C, ...restProps } = this.props;
       return (
-        <C {...this.props} form={formStore} />
+        <C {...this.props} formStore={formStore} />
       );
     }
   }

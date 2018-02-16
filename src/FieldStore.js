@@ -1,4 +1,4 @@
-import { action, observable, computed, runInAction } from 'mobx';
+import { action, observable, runInAction } from 'mobx';
 
 export default class Field {
   // Non-changing properties
@@ -25,24 +25,8 @@ export default class Field {
     this.fieldId = id;
   }
 
-  // Computed
-  @computed
-  get error() {
-    return this.showError ? (this.error || null) : null;
-  }
-
-  @computed
-  get value() {
-    return this.value;
-  }
-
-  @computed
-  get isBusy() {
-    return (this.isSubmitting || this.isValidating);
-  }
-
   @action.bound
-  onchange(newValue) {
+  onChange(newValue) {
     runInAction(() => {
       this.value = newValue;
     });

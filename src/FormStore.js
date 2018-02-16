@@ -2,21 +2,37 @@
 import { observable, action, runInAction } from 'mobx';
 
 export default class Form {
+  // Will be our formName (future context use)
   name;
+  // Will hold our function to submit the form
+  handleSubmit;
   // Function to validate from
   validate;
+
+  // Observables
   @observable
   fields = {};
 
+  constructor(handleSubmit) {
+    this.handleSubmit = handleSubmit;
+  }
+
   @action.bound
   addField(field) {
-    runInAction(() => {
-      this.fields[field.fieldId] = field;
-    });
+    this.fields[field.fieldId] = field;
   }
 
   @action.bound
   onChange(fieldId, value) {
-    this.fields[fieldId].onChange(value);
+    runInAction(() => {
+      this.fields[fieldId].onChange(value);
+    });
+  }
+
+  @action.bound
+  onSubmit(e) {
+    e.preventDefault();
+    const values = Object.values(this.fields).map(field => field.value);
+    this.handleSubmit(values);
   }
 }
