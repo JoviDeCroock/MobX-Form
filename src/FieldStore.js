@@ -11,7 +11,7 @@ export default class Field {
   @observable value; // Current value off the formField
 
   // Options
-  @observable showError = true; // DO we need to show the error?
+  @observable showError = true; // Do we need to show the error?
 
   // FieldStates
   @observable isSubmitting = false; // Is our form submitting
@@ -29,6 +29,16 @@ export default class Field {
   onChange(newValue) {
     runInAction(() => {
       this.value = newValue;
+    });
+  }
+
+  @action.bound
+  validateField() {
+    runInAction(() => {
+      const error = this.validateField();
+      if (error && this.showError) {
+        this.error = error;
+      }
     });
   }
 }

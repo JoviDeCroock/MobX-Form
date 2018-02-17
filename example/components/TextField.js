@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 class TextFieldComponent extends PureComponent {
   static propTypes = {
-    fieldId: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
     placeholder: PropTypes.string,
     type: PropTypes.string,
@@ -17,9 +16,9 @@ class TextFieldComponent extends PureComponent {
   }
 
   onChange = (e) => {
-    const { fieldId, onChange } = this.props;
+    const { onChange } = this.props;
     const newValue = e.target.value;
-    onChange(fieldId, newValue);
+    onChange(newValue);
   }
 
   render() {

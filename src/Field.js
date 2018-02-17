@@ -29,15 +29,18 @@ class ComponentField extends React.Component {
     this.store.addField(field); // Add created field to our store
   }
 
+  onChange = (value) => {
+    this.store.onChange(this.props.fieldId, value);
+  }
+
   render() {
     const { Component, fieldId, ...restProps } = this.props;
-    const { onChange } = this.store;
-    const { value } = this.store.fields[fieldId];
+    const { value /* validateField */ } = this.store.fields[fieldId];
 
     // Value and onChange passed by our Field/Form
     const fieldProperties = {
-      fieldId,
-      onChange,
+      // onBlur: validateField,
+      onChange: this.onChange,
       value,
     };
 

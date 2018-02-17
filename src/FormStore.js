@@ -6,15 +6,14 @@ export default class Form {
   name;
   // Will hold our function to submit the form
   handleSubmit;
-  // Function to validate from
-  validate;
 
   // Observables
   @observable
   fields = {};
 
-  constructor(handleSubmit) {
+  constructor(handleSubmit, validate) {
     this.handleSubmit = handleSubmit;
+    this.validate = validate;
   }
 
   @action.bound
@@ -34,5 +33,13 @@ export default class Form {
     e.preventDefault();
     const values = Object.values(this.fields).map(field => field.value);
     this.handleSubmit(values);
+  }
+
+  // Calls validate on all our fields
+  @action.bound
+  validateForm() {
+    runInAction(() => {
+      Object.values(this.values).map(field => field.validateField());
+    });
   }
 }
