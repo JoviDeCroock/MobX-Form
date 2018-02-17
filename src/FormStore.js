@@ -13,8 +13,9 @@ export default class Form {
   @observable
   fields = {};
 
-  constructor(handleSubmit) {
+  constructor(handleSubmit, validate) {
     this.handleSubmit = handleSubmit;
+    this.validate = validate;
   }
 
   @action.bound
@@ -34,5 +35,10 @@ export default class Form {
     e.preventDefault();
     const values = Object.values(this.fields).map(field => field.value);
     this.handleSubmit(values);
+  }
+
+  @action.bound
+  validateForm() {
+    this.validate(this.values);
   }
 }
