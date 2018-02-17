@@ -2,26 +2,23 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import TextField from './components/TextField';
-
 // External library
 import Form from '../src/Form';
 import Field from '../src/Field';
 
-const LoginForm = ({ formStore }) => (
-  <form onSubmit={formStore.onSubmit}>
+const LoginForm = ({ formStore: { onSubmit } }) => (
+  <form onSubmit={onSubmit}>
     <Field
-      C={TextField}
+      Component={TextField}
       fieldId="username"
       label="username"
-      placeholder="username"
-      store={formStore} />
+      placeholder="username" />
     <Field
-      C={TextField}
+      Component={TextField}
       fieldId="password"
       label="password"
       type="password"
-      placeholder="password"
-      store={formStore} />
+      placeholder="password" />
     <button
       label="Submit"
       type="submit" />
