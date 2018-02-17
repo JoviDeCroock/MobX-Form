@@ -35,10 +35,11 @@ class ComponentField extends React.Component {
 
   render() {
     const { Component, fieldId, ...restProps } = this.props;
-    const { value } = this.store.fields[fieldId];
+    const { value /* validateField */ } = this.store.fields[fieldId];
 
     // Value and onChange passed by our Field/Form
     const fieldProperties = {
+      // onBlur: validateField,
       onChange: this.onChange,
       value,
     };
