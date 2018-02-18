@@ -50,7 +50,6 @@ describe('FormStore', () => {
     };
 
     const formStore = new FormStore(handleSubmit, validators);
-    console.log(formStore.validators.nonFunc)
     expect(typeof formStore.validators.func).toEqual('function');
     expect(formStore.validators.nonFunc).toEqual(undefined);
   });
