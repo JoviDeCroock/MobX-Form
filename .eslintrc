@@ -1,12 +1,17 @@
 {
-  "extends": "airbnb",
   "parser": "babel-eslint",
   "ecmaFeatures": {
       "classes": true,
       "jsx": true
   },
+  "extends": [
+    "airbnb",
+    "prettier",
+    "prettier/react"
+  ],
   "plugins": [
-    "react"
+    "react",
+    "prettier"
   ],
   "root": true,
   "env": {
@@ -29,6 +34,11 @@
     }],
     "no-param-reassign": ["error", {
       "props": false
+    }],
+    "prettier/prettier": ["error", {
+      "trailingComma": "all",
+      "bracketSpacing": true,
+      "singleQuote": true
     }],
     "no-return-await": 0,
     "no-restricted-syntax": 0,
