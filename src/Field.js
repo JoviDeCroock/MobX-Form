@@ -26,7 +26,8 @@ class ComponentField extends React.Component {
     const { fieldId } = props;
     this.store = context.mobxStores.form;
     const validationFunction = this.store.validators[fieldId];
-    const options = { validate: validationFunction }
+    const initialValue = this.store.initialValues[fieldId];
+    const options = { validate: validationFunction, initialValue }
     const field = new Field(fieldId, options);
     this.store.addField(field); // Add created field to our store
   }

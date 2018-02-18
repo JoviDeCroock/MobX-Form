@@ -7,19 +7,23 @@ export default class Form {
   // Will hold our function to submit the form
   handleSubmit;
 
-  // Observables
-  @observable
-  fields = {};
-  @observable
-  validators = {};
 
-  constructor(handleSubmit, validators) {
+  // Will hold our initialValues
+  @observable initialValues = {};
+  // Observables
+  @observable fields = {};
+  @observable validators = {};
+
+  constructor(options = {}) {
+    // Destructure our options
+    const { handleSubmit, initialValues, validators } = options;
     // handleSubmit should be passed AND be a function
     if (!handleSubmit || typeof handleSubmit !== 'function') {
       throw Error('Please pass a handleSubmit function.');
     }
 
     this.handleSubmit = handleSubmit;
+
     if (validators) {
       Object.keys(validators).map(fieldId => {
         if (typeof validators[fieldId] === 'function') {
@@ -28,6 +32,10 @@ export default class Form {
         }
       })
     };
+
+    if (initialValues) {
+      this.initialValues = initialValues;
+    }
   }
 
   @action.bound
@@ -46,8 +54,8 @@ export default class Form {
   @action.bound
   onSubmit(e) {
     e.preventDefault();
-    const errors = this.validateForm();
-    if (errors.length === 0) {
+    const isValid = this.validateForm();
+    if (isValid) {
       const values = Object.values(this.fields).map(field => field.value);
       this.handleSubmit(values);
     }
@@ -56,9 +64,15 @@ export default class Form {
   // Calls validate on all our fields
   @action.bound
   validateForm() {
+    let isValid = true;
     runInAction(() => {
-      const errors = Object.values(this.values).map(field => field.validateField());
-      return errors;
+      Object.values(this.fields).forEach(field => {
+        field.validateField();
+        if(field.error) {
+          isValid = false;
+        }
+      });
     });
+    return isValid;
   }
 }
