@@ -14,12 +14,25 @@ export default class Form {
   validators = {};
 
   constructor(handleSubmit, validators) {
+    // handleSubmit should be passed AND be a function
+    if (!handleSubmit || typeof handleSubmit !== 'function') {
+      throw Error('Please pass a handleSubmit function.');
+    }
+
     this.handleSubmit = handleSubmit;
-    Object.keys(validators).map(fieldId => this.validators[fieldId] = validators[fieldId]);
+    if (validators) {
+      Object.keys(validators).map(fieldId => {
+        if (typeof validators[fieldId] === 'function') {
+          // Only pass into validators if it's a functions
+          this.validators[fieldId] = validators[fieldId];
+        }
+      })
+    };
   }
 
   @action.bound
   addField(field) {
+    // We should validate our field is definitly off class Field
     this.fields[field.fieldId] = field;
   }
 
