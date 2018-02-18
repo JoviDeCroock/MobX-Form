@@ -1,6 +1,6 @@
 # MobX-Form
 
-[![Build Status](https://travis-ci.org/JoviDeCroock/MobX-Form.svg?branch=development)](https://travis-ci.org/JoviDeCroock/MobX-Form)
+[![Build Status](https://travis-ci.org/JoviDeCroock/MobX-Form.svg?branch=master)](https://travis-ci.org/JoviDeCroock/MobX-Form)
 [![codecov](https://codecov.io/gh/JoviDeCroock/MobX-Form/branch/master/graph/badge.svg)](https://codecov.io/gh/JoviDeCroock/MobX-Form)
 
 As someone really inspired by how modern libraries improve and influence our way of development i decided to make a form library inspired by the way redux-form handles forms.
