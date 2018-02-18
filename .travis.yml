@@ -1,5 +1,7 @@
 sudo: false
 language: node_js
+node_js:
+  - "6.10.0"
 cache:
   yarn: true
   directories:
