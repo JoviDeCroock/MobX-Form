@@ -4,6 +4,7 @@ export default class Field {
   // Non-changing properties
   fieldId; // Implies the field in the FormStore
   placeholder;
+  validate;
 
   // Changing properties
   @observable error; // Did this field error?
@@ -20,9 +21,10 @@ export default class Field {
   @observable isValid = false; // Are we valid (should default to true when there's no validation)
 
   // Constructor for Field
-  constructor(id) {
+  constructor(id, options) {
     // Set our fieldId
     this.fieldId = id;
+    this.validate = options.validate;
   }
 
   @action.bound
@@ -34,11 +36,14 @@ export default class Field {
 
   @action.bound
   validateField() {
-    runInAction(() => {
-      const error = this.validateField();
-      if (error && this.showError) {
-        this.error = error;
-      }
-    });
+    if (this.validate && this.showError) {
+      runInAction(() => {
+        const error = this.validate(this.value);
+        if (error) {
+          this.error = error;
+          return error;
+        }
+      });
+    }
   }
 }

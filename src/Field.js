@@ -23,9 +23,11 @@ class ComponentField extends React.Component {
 
   constructor(props, context) {
     super(props);
+    const { fieldId } = props;
     this.store = context.mobxStores.form;
-    const { fieldId, ...rest } = props;
-    const field = new Field(fieldId, rest);
+    const validationFunction = this.store.validators[fieldId];
+    const options = { validate: validationFunction }
+    const field = new Field(fieldId, options);
     this.store.addField(field); // Add created field to our store
   }
 
@@ -35,11 +37,12 @@ class ComponentField extends React.Component {
 
   render() {
     const { Component, fieldId, ...restProps } = this.props;
-    const { value /* validateField */ } = this.store.fields[fieldId];
+    const { value, validateField, error } = this.store.fields[fieldId];
 
     // Value and onChange passed by our Field/Form
     const fieldProperties = {
-      // onBlur: validateField,
+      error,
+      onBlur: validateField,
       onChange: this.onChange,
       value,
     };

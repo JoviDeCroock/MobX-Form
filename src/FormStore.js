@@ -10,10 +10,12 @@ export default class Form {
   // Observables
   @observable
   fields = {};
+  @observable
+  validators = {};
 
-  constructor(handleSubmit, validate) {
+  constructor(handleSubmit, validators) {
     this.handleSubmit = handleSubmit;
-    this.validate = validate;
+    Object.keys(validators).map(fieldId => this.validators[fieldId] = validators[fieldId]);
   }
 
   @action.bound
@@ -31,15 +33,19 @@ export default class Form {
   @action.bound
   onSubmit(e) {
     e.preventDefault();
-    const values = Object.values(this.fields).map(field => field.value);
-    this.handleSubmit(values);
+    const errors = this.validateForm();
+    if (errors.length === 0) {
+      const values = Object.values(this.fields).map(field => field.value);
+      this.handleSubmit(values);
+    }
   }
 
   // Calls validate on all our fields
   @action.bound
   validateForm() {
     runInAction(() => {
-      Object.values(this.values).map(field => field.validateField());
+      const errors = Object.values(this.values).map(field => field.validateField());
+      return errors;
     });
   }
 }

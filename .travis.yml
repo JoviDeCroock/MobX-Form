@@ -1,0 +1,15 @@
+sudo: false
+language: node_js
+node_js:
+  - "6.10.0"
+cache:
+  yarn: true
+  directories:
+    - node_modules
+notifications:
+  email: false
+install:
+  - yarn install
+script: yarn run test
+after_success:
+  - yarn run coverage

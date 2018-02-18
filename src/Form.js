@@ -5,8 +5,8 @@ import { observer } from 'mobx-react';
 import FormStore from './FormStore';
 
 const createForm = (C, options) => {
-  const { handleSubmit, validate } = options;
-  const formStore = new FormStore(handleSubmit, validate);
+  const { handleSubmit, validators } = options;
+  const formStore = new FormStore(handleSubmit, validators);
   @observer
   class Form extends Component {
     static contextTypes = {
