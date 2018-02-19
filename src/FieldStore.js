@@ -4,7 +4,7 @@ export default class Field {
   // Non-changing properties
   fieldId; // Implies the field in the FormStore
   placeholder;
-  validate;
+  validate = null;
 
   // Changing properties
   @observable error; // Did this field error?
@@ -21,27 +21,43 @@ export default class Field {
   @observable isValid = false; // Are we valid (should default to true when there's no validation)
 
   // Constructor for Field
-  constructor(id, options) {
+  constructor(id, options = {}) {
+    if (!id) {
+      throw Error('Fields need a fieldId to work.');
+    }
+
+    const { validate, initialValue } = options;
     // Set our fieldId
     this.fieldId = id;
-    this.validate = options.validate;
+    if (validate) {
+      this.validate = validate;
+    }
+
+    if (initialValue) {
+      this.value = initialValue;
+    }
   }
 
   @action.bound
   onChange(newValue) {
-    runInAction(() => {
-      this.value = newValue;
-    });
+    // Only change when our values are differnt
+    if (this.value !== newValue) {
+      runInAction(() => {
+        this.value = newValue;
+      });
+    }
   }
 
   @action.bound
   validateField() {
+    // Only validate when we want to see erros and we have a function for it
     if (this.validate && this.showError) {
       runInAction(() => {
         const error = this.validate(this.value);
         if (error) {
           this.error = error;
-          return error;
+        } else {
+          this.error = null;
         }
       });
     }

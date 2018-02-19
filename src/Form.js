@@ -6,7 +6,7 @@ import FormStore from './FormStore';
 
 const createForm = (C, options) => {
   const { handleSubmit, validators } = options;
-  const formStore = new FormStore(handleSubmit, validators);
+  const formStore = new FormStore(options);
   @observer
   class Form extends Component {
     static contextTypes = {
