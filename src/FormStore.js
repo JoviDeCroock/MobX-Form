@@ -53,7 +53,9 @@ export default class Form {
 
   @action.bound
   onSubmit(e) {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+    }
     const isValid = this.validateForm();
     if (isValid) {
       const values = Object.values(this.fields).map(field => field.value);
