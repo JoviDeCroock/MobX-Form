@@ -25,13 +25,13 @@ export default class Form {
     this.handleSubmit = handleSubmit;
 
     if (validators) {
-      Object.keys(validators).map(fieldId => {
+      Object.keys(validators).forEach((fieldId) => {
         if (typeof validators[fieldId] === 'function') {
           // Only pass into validators if it's a functions
           this.validators[fieldId] = validators[fieldId];
         }
-      })
-    };
+      });
+    }
 
     if (initialValues) {
       this.initialValues = initialValues;
@@ -52,14 +52,20 @@ export default class Form {
   }
 
   @action.bound
-  onSubmit(e) {
-    if (e) {
-      e.preventDefault();
+  async onSubmit(event) {
+    if (event) {
+      event.preventDefault();
     }
+
     const isValid = this.validateForm();
     if (isValid) {
       const values = Object.values(this.fields).map(field => field.value);
-      this.handleSubmit(values);
+      try {
+        await this.handleSubmit(values);
+        // this.onSuccess();
+      } catch (err) {
+        // this.onError(err);
+      }
     }
   }
 
@@ -68,9 +74,9 @@ export default class Form {
   validateForm() {
     let isValid = true;
     runInAction(() => {
-      Object.values(this.fields).forEach(field => {
+      Object.values(this.fields).forEach((field) => {
         field.validateField();
-        if(field.error) {
+        if (field.error) {
           isValid = false;
         }
       });

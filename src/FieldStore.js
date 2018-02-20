@@ -15,9 +15,7 @@ export default class Field {
   @observable showError = true; // Do we need to show the error?
 
   // FieldStates
-  @observable isSubmitting = false; // Is our form submitting
   @observable isPristine = true; // Touched?
-  @observable isValidating = false; // Validating?
   @observable isValid = false; // Are we valid (should default to true when there's no validation)
 
   // Constructor for Field
@@ -26,11 +24,15 @@ export default class Field {
       throw Error('Fields need a fieldId to work.');
     }
 
-    const { validate, initialValue } = options;
+    const { validate, initialValue, showError } = options;
     // Set our fieldId
     this.fieldId = id;
     if (validate) {
       this.validate = validate;
+    }
+
+    if (showError !== undefined) {
+      this.showError = showError;
     }
 
     if (initialValue) {
@@ -44,6 +46,11 @@ export default class Field {
     if (this.value !== newValue) {
       runInAction(() => {
         this.value = newValue;
+        if (newValue) {
+          this.isPristine = false;
+        } else {
+          this.isPristine = true;
+        }
       });
     }
   }
@@ -57,6 +64,7 @@ export default class Field {
         if (error) {
           this.error = error;
         } else {
+          this.isValid = true;
           this.error = null;
         }
       });
