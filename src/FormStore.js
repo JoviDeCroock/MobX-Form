@@ -13,16 +13,19 @@ export default class Form {
   // Observables
   @observable fields = {};
   @observable validators = {};
+  @observable submitted = false;
+  @observable error = null;
 
   constructor(options = {}) {
     // Destructure our options
-    const { handleSubmit, initialValues, validators } = options;
+    const {
+      handleSubmit, initialValues, validators, onSuccess, onError,
+    } = options;
+
     // handleSubmit should be passed AND be a function
     if (!handleSubmit || typeof handleSubmit !== 'function') {
       throw Error('Please pass a handleSubmit function.');
     }
-
-    this.handleSubmit = handleSubmit;
 
     if (validators) {
       Object.keys(validators).forEach((fieldId) => {
@@ -32,10 +35,10 @@ export default class Form {
         }
       });
     }
-
-    if (initialValues) {
-      this.initialValues = initialValues;
-    }
+    this.handleSubmit = handleSubmit;
+    this.onSuccess = onSuccess || null;
+    this.onError = onError || null;
+    this.initialValues = initialValues || {};
   }
 
   @action.bound
@@ -61,10 +64,13 @@ export default class Form {
     if (isValid) {
       const values = Object.values(this.fields).map(field => field.value);
       try {
+        // See Promise.resolve(function(){ return x })
+        // Will work for normal functions aswell
         await this.handleSubmit(values);
-        // this.onSuccess();
+        this.submitted = true;
+        await this.onSuccess();
       } catch (err) {
-        // this.onError(err);
+        await this.onError(err);
       }
     }
   }
