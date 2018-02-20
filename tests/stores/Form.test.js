@@ -1,6 +1,8 @@
 import FormStore from '../../src/FormStore';
 import FieldStore from '../../src/FieldStore';
 
+// eslint-disable-rule no-undef
+
 describe('FormStore', () => {
   it('All types should be right', () => {
     const handleSubmit = () => console.log('hello');
@@ -12,6 +14,8 @@ describe('FormStore', () => {
   it('Should error when not passing a handleSubmit.', () => {
     try {
       const formStore = new FormStore();
+      // useless line to satisfy the linter
+      formStore.addField();
       // We should never reach this.
       expect(false).toEqual(true);
     } catch (e) {
@@ -22,6 +26,8 @@ describe('FormStore', () => {
   it('Should error when passing a string as handleSubmit.', () => {
     try {
       const formStore = new FormStore({ handleSubmit: 'notAFunction' });
+      // useless line to satisfy the linter
+      formStore.addField();
       // We should never reach this.
       expect(false).toEqual(true);
     } catch (e) {
@@ -85,18 +91,18 @@ describe('FormStore', () => {
     const validators = {
       testField: (value) => {
         if (value.length <= 3) {
-          return 'error'
+          return 'error';
         }
-      }
-    }
+      },
+    };
     const initialValues = {
       testField: 'Rik',
-    }
+    };
 
-    const formStore = new FormStore({ handleSubmit, validators, initialValues});
+    const formStore = new FormStore({ handleSubmit, initialValues, validators });
     formStore.addField(new FieldStore('testField', {
-      validate: validators.testField,
       initialValue: initialValues.testField,
+      validate: validators.testField,
     }));
 
     formStore.onSubmit();
@@ -106,4 +112,4 @@ describe('FormStore', () => {
     formStore.onSubmit();
     expect(formStore.fields.testField.error).toEqual(null);
   });
-})
+});

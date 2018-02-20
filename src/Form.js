@@ -5,8 +5,8 @@ import { observer } from 'mobx-react';
 import FormStore from './FormStore';
 
 const createForm = (C, options) => {
-  const { handleSubmit, validators } = options;
   const formStore = new FormStore(options);
+
   @observer
   class Form extends Component {
     static contextTypes = {
@@ -19,18 +19,17 @@ const createForm = (C, options) => {
 
     getChildContext() {
       const stores = {};
-      // inherit stores
+      // inherit stores (works with Provider)
       const baseStores = this.context.mobxStores;
       if (baseStores) {
         for (const key in baseStores) {
           stores[key] = baseStores[key];
         }
       }
+
       // add own stores
       stores.form = formStore;
-      return {
-        mobxStores: stores,
-      };
+      return { mobxStores: stores };
     }
 
     render() {
