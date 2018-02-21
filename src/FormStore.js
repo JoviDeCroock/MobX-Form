@@ -67,10 +67,14 @@ export default class Form {
         // See Promise.resolve(function(){ return x })
         // Will work for normal functions aswell
         await this.handleSubmit(values);
-        this.submitted = true;
-        await this.onSuccess();
+        if (this.onSuccess) {
+          await this.onSuccess();
+        }
       } catch (err) {
-        await this.onError(err);
+        this.error = err;
+        if (this.onError) {
+          await this.onError(err);
+        }
       }
     }
   }
@@ -88,5 +92,11 @@ export default class Form {
       });
     });
     return isValid;
+  }
+
+  // Calls validate on all a field
+  @action.bound
+  validateField(fieldId) {
+    this.fields[fieldId].validateField();
   }
 }

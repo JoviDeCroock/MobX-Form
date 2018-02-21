@@ -33,8 +33,23 @@ const createForm = (C, options) => {
     }
 
     render() {
+      // for next release inject seperate things
+      const {
+        values,
+        onChange,
+        onSubmit,
+        validateForm,
+        validateField,
+      } = formStore;
+
       return (
-        <C {...this.props} formStore={formStore} />
+        <C
+          {...this.props}
+          change={onChange}
+          values={values}
+          onSubmit={onSubmit}
+          validateForm={validateForm}
+          validateField={validateField} />
       );
     }
   }
