@@ -21,7 +21,6 @@ export default class Form {
     const {
       handleSubmit, initialValues, validators, onSuccess, onError,
     } = options;
-
     // handleSubmit should be passed AND be a function
     if (!handleSubmit || typeof handleSubmit !== 'function') {
       throw Error('Please pass a handleSubmit function.');
@@ -94,9 +93,12 @@ export default class Form {
     return isValid;
   }
 
-  // Calls validate on all a field
+  // Calls validate on a field
   @action.bound
   validateField(fieldId) {
-    this.fields[fieldId].validateField();
+    if (!fieldId) { console.warn('You need a fieldId to validate a Field did you mean validateForm?'); }
+    if (this.fields[fieldId]) {
+      this.fields[fieldId].validateField();
+    }
   }
 }
