@@ -14,6 +14,7 @@ class ComponentField extends React.Component {
     Component: PropTypes.func.isRequired,
     fieldId: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
+    onChange: PropTypes.func,
     placeholder: PropTypes.string,
   }
 
@@ -45,7 +46,7 @@ class ComponentField extends React.Component {
     const fieldProperties = {
       error,
       onBlur: validateField,
-      onChange: this.onChange,
+      onChange: this.props.onChange ? this.props.onChange : this.onChange,
       value,
     };
 
