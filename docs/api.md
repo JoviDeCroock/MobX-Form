@@ -26,17 +26,16 @@ As you can see Form takes two arguments:
   - onError: Will be triggered when handleSubmit errors
   - validators: You can define validation like => { fieldId: validationFunction }
 
-## submitting
+## Component
 
 When wrapping your component it will receive a few properties: `onSubmit`, `change` and `validate`.
 
-`onSubmit` is used for the onSubmit property on your <form>.
+- `onSubmit` is used for the onSubmit property on your <form>.
+- `change` is used when you want control over your `Field` value changes.
+- `validateForm` forces a validate on the form
+- `validateField` will when passing a valid fieldId validate that field
 
-`change` is used when you want control over your `Field` value changes.
 
-`validate` forces a validate on the form
-
-``
 
 # Field
 
@@ -44,8 +43,17 @@ To a Field you pass a
 
 - Component (needed): rendered for current Field
 - fieldId (needed): this will be the name where the value for this field will be stored.
+- showError (optional): this will tell the field you don't want to validate/showErrors
 - All other props you need to have in your `Component`.
 
 ## Under the hood
 
-# Props form receives
+First and foremost the value will be handled by the `Field` and be passed to your fieldComponent.
+
+When passing a custom `onChange` function to a `Field` it will pass that one to your Component but then you are responsible for handling the onChange off our `Field`.
+
+Upon validation error the `Field` will ship the error to your component so it will be received in the props.
+
+a custom `onBlur` function triggering the validate will also be passed.
+
+The `consumer` is responsible for making sure the wanted properties are implemented in the end-component.

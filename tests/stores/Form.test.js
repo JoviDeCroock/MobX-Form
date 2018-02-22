@@ -204,11 +204,14 @@ describe('FormStore', () => {
 
     formStore.validateField('testField');
     expect(formStore.fields.testField.error).toEqual('error');
+    formStore.onChange(null, 'Riki');
     formStore.onChange('testField', 'Riki');
     expect(formStore.fields.testField.value).toEqual('Riki');
     formStore.validateField('testField');
     expect(formStore.fields.testField.error).toEqual(null);
     formStore.validateField();
     expect(formStore.fields.testField.error).toEqual(null);
+    formStore.onChange('testField');
+    expect(formStore.fields.testField.value).toEqual(null);
   });
 });

@@ -35,7 +35,6 @@ const createForm = (options) => {
       render() {
         // for next release inject seperate things
         const {
-          values,
           onChange,
           onSubmit,
           validateForm,
@@ -46,7 +45,6 @@ const createForm = (options) => {
           <C
             {...this.props}
             change={onChange}
-            values={values}
             onSubmit={onSubmit}
             validateForm={validateForm}
             validateField={validateField} />

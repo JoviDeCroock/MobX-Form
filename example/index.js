@@ -33,4 +33,4 @@ function handleSubmit(values) {
   console.log(values);
 }
 
-export default Form(LoginForm, { handleSubmit });
+export default Form({ handleSubmit })(LoginForm);
