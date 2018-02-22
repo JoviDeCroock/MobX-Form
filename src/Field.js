@@ -7,7 +7,7 @@ import Field from './FieldStore';
 @observer
 class ComponentField extends React.Component {
   static contextTypes = {
-    mobxStores: PropTypes.object,
+    formStore: PropTypes.object,
   }
 
   static propTypes = {
@@ -25,7 +25,7 @@ class ComponentField extends React.Component {
   constructor(props, context) {
     super(props);
     const { fieldId } = props;
-    this.store = context.mobxStores.form;
+    this.store = context.formStore.form;
 
     const validationFunction = this.store.validators[fieldId];
     const initialValue = this.store.initialValues[fieldId];

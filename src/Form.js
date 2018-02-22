@@ -10,41 +10,36 @@ const createForm = (options) => {
     @observer
     class Form extends Component {
       static contextTypes = {
-        mobxStores: PropTypes.object,
+        formStore: PropTypes.object,
       }
 
       static childContextTypes = {
-        mobxStores: PropTypes.object,
+        formStore: PropTypes.object,
       }
 
       getChildContext() {
         const stores = {};
-        // inherit stores (works with Provider)
-        const baseStores = this.context.mobxStores;
-        if (baseStores) {
-          for (const key in baseStores) {
-            stores[key] = baseStores[key];
-          }
-        }
-
         // add own stores
         stores.form = formStore;
-        return { mobxStores: stores };
+        return { formStore: stores };
       }
 
       render() {
         // for next release inject seperate things
         const {
+          error,
           onChange,
           onSubmit,
           validateForm,
           validateField,
         } = formStore;
 
+        // inject the form with its normal props and with some handy methods from the formStore
         return (
           <C
             {...this.props}
             change={onChange}
+            error={error}
             onSubmit={onSubmit}
             validateForm={validateForm}
             validateField={validateField} />
