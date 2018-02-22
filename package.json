@@ -1,11 +1,12 @@
 {
-  "name": "mobx-form",
+  "name": "mobx-formstate",
   "description": "Form management library with mobx",
-  "author": "Jovi De Croock <decroockjovi@gmail.com> (https://twitter.com/JoviDeC)",
-  "private": true,
-  "repository": "https://www.github.com/jdecroock/mobx-form",
+  "author": "jdecroock <decroockjovi@gmail.com> (https://twitter.com/JoviDeC)",
+  "private": false,
+  "repository": "https://www.github.com/jovidecroock/mobx-form",
   "license": "MIT",
-  "version": "0.0.2",
+  "version": "0.0.4",
+  "main": "dist/index.js",
   "scripts": {
     "build": "NODE_ENV=production ./node_modules/webpack/bin/webpack.js",
     "test": "NODE_ENV=test istanbul cover jest && codecov"
@@ -25,17 +26,6 @@
     "collectCoverage": true
   },
   "devDependencies": {
-    "codecov": "^3.0.0",
-    "eslint": "^4.17.0",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.6.1",
-    "istanbul": "^0.4.5",
-    "jest": "^22.3.0",
-    "prettier": "1.10.2"
-  },
-  "dependencies": {
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.1",
     "babel-loader": "^7.1.2",
@@ -46,14 +36,26 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "babel-runtime": "^6.26.0",
+    "codecov": "^3.0.0",
+    "eslint": "^4.17.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.6.1",
+    "istanbul": "^0.4.5",
+    "jest": "^22.3.0",
+    "prettier": "1.10.2",
+    "webpack": "^3.10.0"
+  },
+  "dependencies": {
     "mobx": "^3.5.1",
     "mobx-react": "^4.4.2",
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "webpack": "^3.10.0"
+    "react-dom": "^16.2.0"
   },
   "peerDependencies": {
-    "mobx": "^2.5.0 || ^3.0.0"
+    "mobx": "^2.5.0 || ^3.0.0",
+    "mobx-react": "^4.0.0"
   }
 }
