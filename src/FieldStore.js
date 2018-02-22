@@ -43,6 +43,7 @@ export default class Field {
   @action.bound
   onChange(newValue) {
     // Only change when our values are differnt
+    // Save the frames, lessen rerenders!
     if (this.value !== newValue) {
       runInAction(() => {
         this.value = newValue;
