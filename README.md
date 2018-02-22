@@ -14,10 +14,10 @@ When working with MobX i noticed that there were a variety off well-written libr
 
 ## Resources
 
-[Lexicon](https://github.com/JoviDeCroock/MobX-Form/blob/master/docs/lexicon.md)
-[API](https://github.com/JoviDeCroock/MobX-Form/blob/master/docs/api.md)
-[Example](https://github.com/JoviDeCroock/MobX-Form/tree/master/example)
-[Todo](https://github.com/JoviDeCroock/MobX-Form/blob/master/docs/todo.md)
+- [Lexicon](https://github.com/JoviDeCroock/MobX-Form/blob/master/docs/lexicon.md)
+- [API](https://github.com/JoviDeCroock/MobX-Form/blob/master/docs/api.md)
+- [Example](https://github.com/JoviDeCroock/MobX-Form/tree/master/example)
+- [Todo](https://github.com/JoviDeCroock/MobX-Form/blob/master/docs/todo.md)
 
 # Contributing
 
