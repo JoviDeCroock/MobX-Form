@@ -13,7 +13,7 @@ const Login = (props) => (
   </form>
 )
 
-export default Form(LoginContainer, properties);
+export default Form(properties)(Login);
 ```
 
 As you can see Form takes two arguments:
