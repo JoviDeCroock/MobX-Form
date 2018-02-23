@@ -1,5 +1,6 @@
 # MobX-Form
 
+[![npm version](https://badge.fury.io/js/mobx-formstate.svg)](https://badge.fury.io/js/mobx-formstate)
 [![Build Status](https://travis-ci.org/JoviDeCroock/MobX-Form.svg?branch=master)](https://travis-ci.org/JoviDeCroock/MobX-Form)
 [![codecov](https://codecov.io/gh/JoviDeCroock/MobX-Form/branch/master/graph/badge.svg)](https://codecov.io/gh/JoviDeCroock/MobX-Form)
 

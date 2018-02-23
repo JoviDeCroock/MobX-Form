@@ -29,8 +29,48 @@ LoginForm.propTypes = {
   formStore: PropTypes.object.isRequired,
 };
 
-function handleSubmit(values) {
-  console.log(values);
+async function handleSubmit(values) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log(values);
+      resolve(values);
+    }, 1000);
+  });
 }
 
-export default Form({ handleSubmit })(LoginForm);
+function onSuccess() {
+  // Pop Happiness
+  console.warn('Successs');
+}
+
+function onError(error) {
+  // Pop Sadness
+  console.warn(error);
+}
+
+const validators = {
+  password: function validatePassword(value) {
+    if (value.length < 6) {
+      return 'Insufficient length';
+    }
+    return false;
+  },
+  username: function validateUsername(value) {
+    if (value.length < 6) {
+      return 'Insufficient length';
+    }
+    return false;
+  },
+};
+
+const initialValues = {
+  username: 'userE',
+};
+
+export default Form({
+  handleSubmit,
+  initialValues,
+  onError,
+  onSuccess,
+  validators,
+})(LoginForm);
