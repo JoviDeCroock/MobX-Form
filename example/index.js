@@ -3,10 +3,17 @@ import PropTypes from 'prop-types';
 
 import TextField from './components/TextField';
 // External library
-import Form from '../src/Form';
-import Field from '../src/Field';
+import Form from '../src/components/Form';
+import Field from '../src/components/Field';
 
-const LoginForm = ({ formStore: { onSubmit } }) => (
+const LoginForm = ({
+  change,
+  error,
+  isValid,
+  onSubmit,
+  validateField,
+  validateForm,
+}) => (
   <form onSubmit={onSubmit}>
     <Field
       Component={TextField}
@@ -26,7 +33,12 @@ const LoginForm = ({ formStore: { onSubmit } }) => (
 );
 
 LoginForm.propTypes = {
-  formStore: PropTypes.object.isRequired,
+  change: PropTypes.func,
+  error: PropTypes.string,
+  isValid: PropTypes.bool,
+  onSubmit: PropTypes.func,
+  validateField: PropTypes.func,
+  validateForm: PropTypes.func,
 };
 
 async function handleSubmit(values) {

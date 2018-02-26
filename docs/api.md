@@ -28,8 +28,10 @@ As you can see Form takes two arguments:
 
 ## Component
 
-When wrapping your component it will receive a few properties: `onSubmit`, `change` and `validate`.
+When wrapping your component it will receive a few properties: `onSubmit`, `change`, `validate`, ...
 
+- `error` the global error when submitting
+- `isValid` the boolean that is true when all validators evaluate correct
 - `onSubmit` is used for the onSubmit property on your <form>.
 - `change` is used when you want control over your `Field` value changes.
 - `validateForm` forces a validate on the form
