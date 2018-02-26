@@ -87,10 +87,10 @@ export default class Form {
       try {
         // See Promise.resolve(function(){ return x })
         // Will work for normal functions aswell
-        await this.handleSubmit(values);
+        const result = await this.handleSubmit(values);
         // If we have an onSuccess preform it (possibly async)
         if (this.onSuccess) {
-          await this.onSuccess();
+          await this.onSuccess(result);
         }
       } catch (err) {
         // This has errored (something wrong with submit/success)
