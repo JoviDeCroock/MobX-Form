@@ -21,7 +21,8 @@ export default class Field {
   // Constructor for Field
   constructor(id, options = {}) {
     if (!id) {
-      throw Error('Fields need a fieldId to work.');
+      console.warn('Fields need a fieldId to work.');
+      throw new Error('Please pass a fieldId to all fields. Passed options:', options);
     }
 
     const { validate, initialValue, showError } = options;

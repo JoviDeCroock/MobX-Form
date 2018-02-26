@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 
-import FormStore from './FormStore';
+import FormStore from '../stores/FormStore';
 
 const createForm = (options) => {
   const formStore = new FormStore(options);
@@ -28,6 +28,7 @@ const createForm = (options) => {
         // for next release inject seperate things
         const {
           error,
+          isValid,
           onChange,
           onSubmit,
           validateForm,
@@ -39,6 +40,7 @@ const createForm = (options) => {
           <C
             {...this.props}
             change={onChange}
+            isValid={isValid}
             error={error}
             onSubmit={onSubmit}
             validateForm={validateForm}
