@@ -1,4 +1,4 @@
-import FieldStore from '../../src/FieldStore';
+import FieldStore from '../../src/stores/FieldStore';
 
 // eslint-disable-rule no-undef
 
@@ -53,7 +53,7 @@ describe('FieldStore', () => {
       fieldStore.onChange('x');
       expect(true).toEqual(false);
     } catch (err) {
-      expect(err.message).toEqual('Fields need a fieldId to work.');
+      expect(err.message).toEqual('Please pass a fieldId to all fields. Passed options:');
     }
   });
 

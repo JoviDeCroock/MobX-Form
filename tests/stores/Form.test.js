@@ -1,5 +1,5 @@
-import FormStore from '../../src/FormStore';
-import FieldStore from '../../src/FieldStore';
+import FormStore from '../../src/stores/FormStore';
+import FieldStore from '../../src/stores/FieldStore';
 
 // eslint-disable-rule no-undef
 

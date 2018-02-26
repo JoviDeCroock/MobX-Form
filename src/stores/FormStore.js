@@ -26,15 +26,18 @@ export default class Form {
     } = options;
     // handleSubmit should be passed AND be a function
     if (!handleSubmit || typeof handleSubmit !== 'function') {
-      throw Error('Please pass a handleSubmit function.');
+      console.warn('Forms need a handleSubmit function to work.');
+      throw new Error('Please pass a handleSubmit function.');
     }
 
     if (validators) {
       Object.keys(validators).forEach((fieldId) => {
         if (typeof validators[fieldId] === 'function') {
-          // Only pass into validators if it's a functions
+          // Only pass into validators if it's a function
           this.validators[fieldId] = validators[fieldId];
         }
+        // We can possibly extend this by checking if it's one of our allowed validation strings
+        // TODO: write later
       });
     }
     this.handleSubmit = handleSubmit;
@@ -42,6 +45,17 @@ export default class Form {
     this.onError = onError || null;
     this.initialValues = initialValues || {};
   }
+
+  // @computed
+  // get isPristine() {
+  //   const values = Object.values(this.fields).filter(({ value }) => (!value && typeof value !== 'boolean'));
+  //   return (values.length !== 0);
+  // }
+
+  // @action.bound
+  // resetFields() {
+  //   runInAction(() => this.fields.map(field => field.reset()));
+  // }
 
   @action.bound
   addField(field) {
