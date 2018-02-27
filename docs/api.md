@@ -36,6 +36,7 @@ When wrapping your component it will receive a few properties: `onSubmit`, `chan
 - `change` is used when you want control over your `Field` value changes.
 - `validateForm` forces a validate on the form
 - `validateField` will when passing a valid fieldId validate that field
+- `resetFields`: Will reset all fields to their initialValue/Empty
 
 
 
