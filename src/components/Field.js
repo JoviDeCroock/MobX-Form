@@ -40,13 +40,16 @@ class ComponentField extends React.Component {
 
   render() {
     const { Component, fieldId, ...restProps } = this.props;
-    const { value, validateField, error } = this.store.fields[fieldId];
+    const {
+      value, validateField, error, reset,
+    } = this.store.fields[fieldId];
 
     // Value and onChange passed by our Field/Form
     const fieldProperties = {
       error,
       onBlur: validateField,
       onChange: this.props.onChange ? this.props.onChange : this.onChange,
+      reset,
       value,
     };
 
