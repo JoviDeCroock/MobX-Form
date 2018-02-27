@@ -15,6 +15,7 @@ export default class Form {
   // Observables
   @observable fields = {};
   @observable validators = {};
+  @observable validationSchema;
   @observable initialValues = {};
   @observable submitted = false;
   @observable error = null;
@@ -52,10 +53,10 @@ export default class Form {
   //   return (values.length !== 0);
   // }
 
-  // @action.bound
-  // resetFields() {
-  //   runInAction(() => this.fields.map(field => field.reset()));
-  // }
+  @action.bound
+  resetFields() {
+    runInAction(() => Object.values(this.fields).map(field => field.reset()));
+  }
 
   @action.bound
   addField(field) {
