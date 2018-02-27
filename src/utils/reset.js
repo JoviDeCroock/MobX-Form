@@ -9,20 +9,14 @@ function reset(value) {
     case 'boolean': {
       return false;
     }
-    case 'date': {
-      return new Date();
-    }
-    case 'array': {
-      return [];
-    }
     case 'object': {
+      if (value instanceof Date) {
+        return new Date();
+      }
       return {};
     }
-    case 'symbol': {
-      return '';
-    }
     default: {
-      return '';
+      return undefined;
     }
   }
 }

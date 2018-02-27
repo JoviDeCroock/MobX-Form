@@ -48,8 +48,8 @@ export default class Form {
   }
 
   // @computed
-  // get isPristine() {
-  //   const values = Object.values(this.fields).filter(({ value }) => (!value && typeof value !== 'boolean'));
+  // get dirty() {
+  //   const values = Object.values(this.fields).filter(({ isPristine }) => isPristine);
   //   return (values.length !== 0);
   // }
 
