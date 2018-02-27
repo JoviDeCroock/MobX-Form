@@ -15,6 +15,7 @@ export default class Form {
   // Observables
   @observable fields = {};
   @observable validators = {};
+  @observable validationSchema;
   @observable initialValues = {};
   @observable submitted = false;
   @observable error = null;
@@ -47,15 +48,15 @@ export default class Form {
   }
 
   // @computed
-  // get isPristine() {
-  //   const values = Object.values(this.fields).filter(({ value }) => (!value && typeof value !== 'boolean'));
+  // get dirty() {
+  //   const values = Object.values(this.fields).filter(({ isPristine }) => isPristine);
   //   return (values.length !== 0);
   // }
 
-  // @action.bound
-  // resetFields() {
-  //   runInAction(() => this.fields.map(field => field.reset()));
-  // }
+  @action.bound
+  resetFields() {
+    runInAction(() => Object.values(this.fields).map(field => field.reset()));
+  }
 
   @action.bound
   addField(field) {

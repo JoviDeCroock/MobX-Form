@@ -1,10 +1,12 @@
 import { action, observable, runInAction } from 'mobx';
+import { reset } from '../utils';
 
 export default class Field {
   // Non-changing properties
   fieldId; // Implies the field in the FormStore
   placeholder;
   validate = null;
+  initialValue;
 
   // Changing properties
   @observable error; // Did this field error?
@@ -38,7 +40,19 @@ export default class Field {
 
     if (initialValue) {
       this.value = initialValue;
+      this.initialValue = initialValue;
     }
+  }
+
+  @action.bound
+  reset() {
+    runInAction(() => {
+      if (this.initialValue) {
+        this.value = this.initialValue;
+      } else {
+        this.value = reset(this.value);
+      }
+    });
   }
 
   @action.bound
