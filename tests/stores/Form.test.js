@@ -214,4 +214,27 @@ describe('FormStore', () => {
     formStore.onChange('testField');
     expect(formStore.fields.testField.value).toEqual(null);
   });
+
+  it('should reset all fields', () => {
+    const handleSubmit = () => console.log('hello');
+    const initialValues = {
+      testField: 'Rik',
+    };
+
+    const formStore = new FormStore({ handleSubmit, initialValues });
+    formStore.addField(new FieldStore('testField', {
+      initialValue: initialValues.testField,
+    }));
+    formStore.addField(new FieldStore('testField2'));
+
+    expect(formStore.fields.testField.value).toEqual(initialValues.testField);
+    expect(formStore.fields.testField2.value).toEqual(undefined);
+    formStore.onChange('testField', 'Rikii');
+    formStore.onChange('testField2', 'Rikii');
+    expect(formStore.fields.testField.value).toEqual('Rikii');
+    expect(formStore.fields.testField2.value).toEqual('Rikii');
+    formStore.resetFields();
+    expect(formStore.fields.testField.value).toEqual(initialValues.testField);
+    expect(formStore.fields.testField2.value).toEqual('');
+  });
 });

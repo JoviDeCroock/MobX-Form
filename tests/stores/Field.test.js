@@ -99,4 +99,24 @@ describe('FieldStore', () => {
     expect(fieldStore.error).toEqual(null);
     expect(fieldStore.isValid).toEqual(true);
   });
+
+  it('Reset should work', () => {
+    const initialValue = 'Rik';
+    const fieldStore = new FieldStore('testField', {
+      initialValue,
+    });
+
+    const fieldStore2 = new FieldStore('testField2');
+
+    expect(fieldStore.value).toEqual(initialValue);
+    fieldStore.onChange('Rikii');
+    expect(fieldStore.value).toEqual('Rikii');
+    fieldStore.reset();
+    expect(fieldStore.value).toEqual(initialValue);
+    expect(fieldStore2.value).toEqual(undefined);
+    fieldStore2.onChange('Rikii');
+    expect(fieldStore2.value).toEqual('Rikii');
+    fieldStore2.reset();
+    expect(fieldStore2.value).toEqual('');
+  });
 });
