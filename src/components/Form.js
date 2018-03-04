@@ -24,6 +24,10 @@ const createForm = (options) => {
         return { formStore: stores };
       }
 
+      componentWillUnmount() {
+        formStore.resetFields();
+      }
+
       render() {
         const {
           error,

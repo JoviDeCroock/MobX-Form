@@ -31,7 +31,12 @@ class ComponentField extends React.Component {
     const initialValue = this.store.initialValues[fieldId];
     const options = { initialValue, validate: validationFunction };
     const field = new Field(fieldId, options);
+    this.field = field;
     this.store.addField(field); // Add created field to our store
+  }
+
+  componentWillUnmount() {
+    this.field.reset();
   }
 
   onChange = (value) => {

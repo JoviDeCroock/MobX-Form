@@ -84,7 +84,10 @@ export default class Form {
 
     const isValid = this.validateForm();
     if (isValid) {
-      const values = Object.values(this.fields).map(field => field.value);
+      const values = {};
+      Object.keys(this.fields).forEach((key) => {
+        values[key] = this.fields[key].value;
+      });
       try {
         // See Promise.resolve(function(){ return x })
         // Will work for normal functions aswell
@@ -94,13 +97,16 @@ export default class Form {
           await this.onSuccess(result);
         }
       } catch (err) {
-        // This has errored (something wrong with submit/success)
-        // Set our error
-        this.error = err;
-        // onError hook provided? Use it!
-        if (this.onError) {
-          await this.onError(err);
-        }
+        runInAction(async () => {
+          // This has errored (something wrong with submit/success)
+          // Set our error
+          console.log(err);
+          this.error = err;
+          // onError hook provided? Use it!
+          if (this.onError) {
+            await this.onError(err);
+          }
+        });
       }
     }
   }

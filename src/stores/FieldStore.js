@@ -52,6 +52,9 @@ export default class Field {
       } else {
         this.value = reset(this.value);
       }
+      this.isPristine = true;
+      this.isValid = false;
+      this.error = null;
     });
   }
 
