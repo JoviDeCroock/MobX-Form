@@ -3,7 +3,6 @@ TodoList
 - Tests
   - component testing
 - Form
-  - reset fields
   - name form
 - FieldGroup
   - handle props

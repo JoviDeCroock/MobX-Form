@@ -24,12 +24,17 @@ const createForm = (options) => {
         return { formStore: stores };
       }
 
+      componentWillUnmount() {
+        formStore.resetFields();
+      }
+
       render() {
         const {
           error,
           isValid,
           onChange,
           onSubmit,
+          patchValues,
           resetFields,
           validateForm,
           validateField,
@@ -43,6 +48,7 @@ const createForm = (options) => {
             isValid={isValid}
             error={error}
             onSubmit={onSubmit}
+            patchValues={patchValues}
             resetFields={resetFields}
             validateForm={validateForm}
             validateField={validateField} />

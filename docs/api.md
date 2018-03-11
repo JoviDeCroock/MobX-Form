@@ -34,6 +34,7 @@ When wrapping your component it will receive a few properties: `onSubmit`, `chan
 - `isValid` the boolean that is true when all validators evaluate correct
 - `onSubmit` is used for the onSubmit property on your <form>.
 - `change` is used when you want control over your `Field` value changes.
+- `patchValues` is used to patch your fields in the lifecycle of your form, this takes an object with key (field) and value (newValue)
 - `validateForm` forces a validate on the form
 - `validateField` will when passing a valid fieldId validate that field
 - `resetFields`: Will reset all fields to their initialValue/Empty

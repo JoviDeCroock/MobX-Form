@@ -2,6 +2,14 @@ import { action, observable, runInAction } from 'mobx';
 import { reset } from '../utils';
 
 export default class Field {
+  static mobxLoggerConfig = {
+    enabled: false,
+    methods: {
+      onChange: true,
+    },
+  };
+
+
   // Non-changing properties
   fieldId; // Implies the field in the FormStore
   placeholder;
@@ -52,6 +60,9 @@ export default class Field {
       } else {
         this.value = reset(this.value);
       }
+      this.isPristine = true;
+      this.isValid = false;
+      this.error = null;
     });
   }
 

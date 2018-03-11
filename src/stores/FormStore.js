@@ -1,7 +1,16 @@
 // Can function as our main injection point
-import { observable, action, runInAction } from 'mobx';
+import { observable, action, runInAction, transaction } from 'mobx';
 
 export default class Form {
+  static mobxLoggerConfig = {
+    enabled: false,
+    methods: {
+      onChange: true,
+      onSubmit: true,
+      patchValues: true,
+    },
+  };
+
   // Will be our formName (future context use, extend to respect multi-forms)
   name;
 
@@ -84,7 +93,10 @@ export default class Form {
 
     const isValid = this.validateForm();
     if (isValid) {
-      const values = Object.values(this.fields).map(field => field.value);
+      const values = {};
+      Object.keys(this.fields).forEach((key) => {
+        values[key] = this.fields[key].value;
+      });
       try {
         // See Promise.resolve(function(){ return x })
         // Will work for normal functions aswell
@@ -94,15 +106,39 @@ export default class Form {
           await this.onSuccess(result);
         }
       } catch (err) {
-        // This has errored (something wrong with submit/success)
-        // Set our error
-        this.error = err;
-        // onError hook provided? Use it!
-        if (this.onError) {
-          await this.onError(err);
-        }
+        runInAction(async () => {
+          // This has errored (something wrong with submit/success)
+          // Set our error
+          console.log(err);
+          this.error = err;
+          // onError hook provided? Use it!
+          if (this.onError) {
+            await this.onError(err);
+          }
+        });
       }
     }
+  }
+
+  @action.bound
+  patchValues(newValues) {
+    // Needs to be an object
+    if (typeof newValues !== 'object') {
+      console.warn('Forms need a handleSubmit function to work.');
+      return;
+    }
+
+    // DO it transactionally to avoid unneeded rerenders
+    transaction(() => {
+      Object.keys(newValues).forEach((key) => {
+        const value = this.fields[key];
+        if (value) {
+          value.onChange(newValues[key]);
+        } else {
+          console.warn(`You have not defined a field with key ${key}`);
+        }
+      });
+    });
   }
 
   // Calls validate on all our fields

@@ -190,6 +190,7 @@ describe('FormStore', () => {
         if (value.length <= 3) {
           return 'error';
         }
+        return null;
       },
     };
     const initialValues = {
@@ -213,6 +214,35 @@ describe('FormStore', () => {
     expect(formStore.fields.testField.error).toEqual(null);
     formStore.onChange('testField');
     expect(formStore.fields.testField.value).toEqual(null);
+  });
+
+  it('Should patch existing values and fail on non object', () => {
+    const handleSubmit = () => console.log('hello');
+    const validators = {
+      testField: (value) => {
+        if (value.length <= 3) {
+          return 'error';
+        }
+        return null;
+      },
+    };
+    const initialValues = {
+      testField: 'Rik',
+    };
+
+    const formStore = new FormStore({ handleSubmit, initialValues, validators });
+    formStore.addField(new FieldStore('testField', {
+      initialValue: initialValues.testField,
+      validate: validators.testField,
+    }));
+
+    expect(formStore.fields.testField.value).toEqual('Rik');
+    formStore.patchValues({ testField: 'patched', testField2: 'non existing' });
+    expect(formStore.fields.testField.value).toEqual('patched');
+    expect(formStore.fields.testField2).toEqual(undefined);
+    formStore.patchValues('testField');
+    expect(formStore.fields.testField.value).toEqual('patched');
+    expect(formStore.fields.testField2).toEqual(undefined);
   });
 
   it('should reset all fields', () => {
