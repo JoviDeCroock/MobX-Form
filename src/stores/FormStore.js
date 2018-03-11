@@ -2,6 +2,15 @@
 import { observable, action, runInAction, transaction } from 'mobx';
 
 export default class Form {
+  static mobxLoggerConfig = {
+    enabled: false,
+    methods: {
+      onChange: true,
+      onSubmit: true,
+      patchValues: true,
+    },
+  };
+
   // Will be our formName (future context use, extend to respect multi-forms)
   name;
 
