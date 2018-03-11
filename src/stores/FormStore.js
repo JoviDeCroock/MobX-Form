@@ -1,5 +1,5 @@
 // Can function as our main injection point
-import { observable, action, runInAction } from 'mobx';
+import { observable, action, runInAction, transaction } from 'mobx';
 
 export default class Form {
   // Will be our formName (future context use, extend to respect multi-forms)
@@ -109,6 +109,27 @@ export default class Form {
         });
       }
     }
+  }
+
+  @action.bound
+  patchValues(newValues) {
+    // Needs to be an object
+    if (typeof newValues !== 'object') {
+      console.warn('Forms need a handleSubmit function to work.');
+      return;
+    }
+
+    // DO it transactionally to avoid unneeded rerenders
+    transaction(() => {
+      Object.keys(newValues).forEach((key) => {
+        const value = this.fields[key];
+        if (value) {
+          value.onChange(newValues[key]);
+        } else {
+          console.warn(`You have not defined a field with key ${key}`);
+        }
+      });
+    });
   }
 
   // Calls validate on all our fields
