@@ -16,6 +16,10 @@ export default class Form {
 
   // Will hold our function to submit the form
   handleSubmit;
+
+  // Flag if we have individual validators or are validating according to schema
+  isSchemaValidation;
+
   // Will hold our hooks for error/success
   onSuccess;
   onError;
@@ -40,16 +44,17 @@ export default class Form {
       throw new Error('Please pass a handleSubmit function.');
     }
 
-    if (validators) {
+    if (validators && typeof validators === 'object') {
       Object.keys(validators).forEach((fieldId) => {
         if (typeof validators[fieldId] === 'function') {
           // Only pass into validators if it's a function
           this.validators[fieldId] = validators[fieldId];
         }
-        // We can possibly extend this by checking if it's one of our allowed validation strings
-        // TODO: write later
       });
+    } else if (validators && typeof validators === 'function') {
+      this.isSchemaValidation = true;
     }
+
     this.handleSubmit = handleSubmit;
     this.onSuccess = onSuccess || null;
     this.onError = onError || null;
@@ -148,13 +153,29 @@ export default class Form {
     let isValid = true;
     runInAction(() => {
       // Run all of our validates in an action
-      Object.values(this.fields).forEach((field) => {
-        field.validateField();
-        // If this produces an error we aren't valid anymore (underlying will display this aswell)
-        if (field.error) {
-          isValid = false;
+      if (this.isSchemaValidation) {
+        // Schema
+        const formValues = Object.keys(this.fields).map(fieldKey => ({ [fieldKey]: this.fields[fieldKey].value }));
+        const errors = this.validate(formValues);
+        const errorKeys = Object.keys(errors);
+        if (errorKeys) {
+          errorKeys.forEach((fieldKey) => {
+            this.fields[fieldKey] = errors[fieldKey];
+          });
+
+          if (errorKeys > 0) {
+            isValid = false;
+          }
         }
-      });
+      } else {
+        Object.values(this.fields).forEach((field) => {
+          field.validateField();
+          // If this produces an error we aren't valid anymore (underlying will display this aswell)
+          if (field.error) {
+            isValid = false;
+          }
+        });
+      }
     });
 
     // Return this in case we are submitting/force validating in UI

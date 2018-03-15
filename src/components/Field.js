@@ -58,6 +58,8 @@ class ComponentField extends React.Component {
     const { Component, fieldId, ...restProps } = this.props;
     const {
       error,
+      onBlur,
+      onFocus,
       value,
       validateField,
       reset,
@@ -67,8 +69,9 @@ class ComponentField extends React.Component {
     const fieldProperties = {
       error,
       // Change this to touched: true for schemaValidation
-      onBlur: validateField,
+      onBlur: validateField || onBlur,
       onChange: this.props.onChange ? this.props.onChange : this.onChange,
+      onFocus,
       reset,
       value,
     };

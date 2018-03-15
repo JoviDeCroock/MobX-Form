@@ -25,8 +25,9 @@ export default class Field {
   @observable showError = true; // Do we need to show the error?
 
   // FieldStates
-  @observable isPristine = true; // Touched?
+  @observable isPristine = true; // Dirty?
   @observable isValid = false; // Are we valid (should default to true when there's no validation)
+  @observable touched = false;
 
   // Constructor for Field
   constructor(id, options = {}) {
@@ -80,6 +81,22 @@ export default class Field {
         }
       });
     }
+  }
+
+  @action.bound
+  onBlur() {
+    runInAction(() => {
+      // We tab away so you are touched
+      this.touched = true;
+    });
+  }
+
+  @action.bound
+  onFocus() {
+    runInAction(() => {
+      // We focus you so remove error for a while until tabbed away
+      this.touched = false;
+    });
   }
 
   @action.bound
