@@ -36,7 +36,7 @@ export default class Form {
   constructor(options = {}) {
     // Destructure our options
     const {
-      handleSubmit, initialValues, validators, onSuccess, onError,
+      handleSubmit, initialValues, validate, onSuccess, onError,
     } = options;
     // handleSubmit should be passed AND be a function
     if (!handleSubmit || typeof handleSubmit !== 'function') {
@@ -44,15 +44,16 @@ export default class Form {
       throw new Error('Please pass a handleSubmit function.');
     }
 
-    if (validators && typeof validators === 'object') {
-      Object.keys(validators).forEach((fieldId) => {
-        if (typeof validators[fieldId] === 'function') {
-          // Only pass into validators if it's a function
-          this.validators[fieldId] = validators[fieldId];
+    if (validate && typeof validate === 'object') {
+      Object.keys(validate).forEach((fieldId) => {
+        if (typeof validate[fieldId] === 'function') {
+          // Only pass into validate if it's a function
+          this.validators[fieldId] = validate[fieldId];
         }
       });
-    } else if (validators && typeof validators === 'function') {
+    } else if (validate && typeof validate === 'function') {
       this.isSchemaValidation = true;
+      this.validate = validate;
     }
 
     this.handleSubmit = handleSubmit;
@@ -60,12 +61,6 @@ export default class Form {
     this.onError = onError || null;
     this.initialValues = initialValues || {};
   }
-
-  // @computed
-  // get dirty() {
-  //   const values = Object.values(this.fields).filter(({ isPristine }) => isPristine);
-  //   return (values.length !== 0);
-  // }
 
   @action.bound
   resetFields() {
@@ -96,7 +91,7 @@ export default class Form {
       event.preventDefault();
     }
 
-    const isValid = this.validateForm();
+    const isValid = await this.validateForm();
     if (isValid) {
       const values = {};
       Object.keys(this.fields).forEach((key) => {
@@ -114,8 +109,11 @@ export default class Form {
         runInAction(async () => {
           // This has errored (something wrong with submit/success)
           // Set our error
-          console.log(err);
-          this.error = err;
+          if (typeof err === 'string') {
+            this.error = err;
+          } else {
+            this.error = err.message || (err.body && err.body.message) || 'Submission error';
+          }
           // onError hook provided? Use it!
           if (this.onError) {
             await this.onError(err);
@@ -148,35 +146,48 @@ export default class Form {
 
   // Calls validate on all our fields
   @action.bound
-  validateForm() {
+  async validateForm() {
     // Let's assume it's a valid form
     let isValid = true;
-    runInAction(() => {
-      // Run all of our validates in an action
-      if (this.isSchemaValidation) {
-        // Schema
-        const formValues = Object.keys(this.fields).map(fieldKey => ({ [fieldKey]: this.fields[fieldKey].value }));
-        const errors = this.validate(formValues);
+    // Run all of our validates in an action
+    if (this.isSchemaValidation) {
+      // Schema
+      const formValues = Object.keys(this.fields).reduce((acc, fieldKey) => {
+        acc[fieldKey] = this.fields[fieldKey].value;
+        return acc;
+      }, {});
+
+      const errors = await this.validate(formValues);
+
+      if (errors) {
         const errorKeys = Object.keys(errors);
-        if (errorKeys) {
+
+        runInAction(() => {
           errorKeys.forEach((fieldKey) => {
-            this.fields[fieldKey] = errors[fieldKey];
+            this.fields[fieldKey].error = errors[fieldKey];
           });
 
-          if (errorKeys > 0) {
-            isValid = false;
-          }
+          const formValueKeys = Object.keys(formValues);
+          formValueKeys.filter(key => !errorKeys.includes(key)).forEach((validKey) => {
+            this.fields[validKey].error = null;
+          });
+        });
+
+        if (errorKeys.length > 0) {
+          isValid = false;
         }
       } else {
-        Object.values(this.fields).forEach((field) => {
-          field.validateField();
-          // If this produces an error we aren't valid anymore (underlying will display this aswell)
-          if (field.error) {
-            isValid = false;
-          }
-        });
+        runInAction(() => { Object.keys(this.fields).forEach((key) => { this.fields[key].error = null; }); });
       }
-    });
+    } else {
+      await Object.values(this.fields).forEach(async (field) => {
+        await field.validateField();
+        // If this produces an error we aren't valid anymore (underlying will display this aswell)
+        if (field.error) {
+          isValid = false;
+        }
+      });
+    }
 
     // Return this in case we are submitting/force validating in UI
     return isValid;
@@ -184,11 +195,11 @@ export default class Form {
 
   // Calls validate on a field
   @action.bound
-  validateField(fieldId) {
+  async validateField(fieldId) {
     // Warn our consumer he's not passing a fieldId so he can't use this function
     if (!fieldId) { console.warn('You need a fieldId to validate a Field did you mean validateForm?'); }
     if (this.fields[fieldId]) {
-      this.fields[fieldId].validateField();
+      await this.fields[fieldId].validateField();
     }
   }
 }

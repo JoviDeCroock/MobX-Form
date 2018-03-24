@@ -100,11 +100,11 @@ export default class Field {
   }
 
   @action.bound
-  validateField() {
+  async validateField() {
     // Only validate when we want to see erros and we have a function for it
     if (this.validate && this.showError) {
+      const error = await this.validate(this.value);
       runInAction(() => {
-        const error = this.validate(this.value);
         if (error) {
           this.error = error;
         } else {
