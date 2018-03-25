@@ -60,7 +60,7 @@ function onError(error) {
   console.warn(error);
 }
 
-const validators = {
+const validate = {
   password: function validatePassword(value) {
     if (value.length < 6) {
       return 'Insufficient length';
@@ -75,6 +75,12 @@ const validators = {
   },
 };
 
+const alternativeValidate = (values) => {
+  const { email, password } = values;
+  // Do some validation
+  return {};
+};
+
 const initialValues = {
   username: 'userE',
 };
@@ -84,5 +90,5 @@ export default Form({
   initialValues,
   onError,
   onSuccess,
-  validators,
+  validate,
 })(LoginForm);

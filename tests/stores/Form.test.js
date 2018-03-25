@@ -163,7 +163,7 @@ describe('FormStore', () => {
 
     await formStore.onSubmit();
     console.log(onError);
-    expect(formStore.error).toBeInstanceOf(Error);
+    expect(formStore.error).toEqual('y is not defined');
   });
 
   it('should call onError when crashing', async () => {
@@ -179,7 +179,7 @@ describe('FormStore', () => {
     }));
 
     await formStore.onSubmit();
-    expect(formStore.error).toBeInstanceOf(Error);
+    expect(formStore.error).toEqual('y is not defined');
   });
 
 
@@ -293,9 +293,10 @@ describe('FormStore', () => {
     formStore.addField(new FieldStore('testField2'));
 
     expect(formStore.isSchemaValidation).toBeTruthy();
+    formStore.fields.testField.onBlur();
     let valid = await formStore.validateForm();
     expect(formStore.fields.testField.error).toEqual(error);
-    expect(formStore.fields.testField2.error).toEqual(error2);
+    expect(formStore.fields.testField2.error).toEqual(undefined);
     expect(valid).toBeFalsy();
     await formStore.onSubmit();
     formStore.onChange('testField2', 'Rik');

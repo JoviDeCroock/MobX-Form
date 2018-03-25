@@ -24,7 +24,12 @@ As you can see Form takes two arguments:
   - initialValues: You can define initialValues like => { fieldId: value }
   - onSuccess: Will be triggered when handleSubmit is succesfull
   - onError: Will be triggered when handleSubmit errors
-  - validators: You can define validation like => { fieldId: validationFunction }
+  - validate: You can define validation like => { fieldId: validationFunction }
+
+### Validation
+
+You can pass a `function` or `object` to the `validate` property, for an object this will result in passing individual validators to all Fields that will trigger onBlur.
+For a function this will show the error when the field has been touched.
 
 ## Component
 

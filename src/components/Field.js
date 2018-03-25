@@ -30,11 +30,17 @@ class ComponentField extends React.Component {
     // Bind our formStore from context to our this
     this.store = context.formStore.form;
 
-    const validationFunction = this.store.validators[fieldId];
+    let validationFunction = this.store.validators[fieldId];
+    const { isSchemaValidation } = this.store;
+    this.isSchemaValidation = isSchemaValidation;
+    if (isSchemaValidation) {
+      validationFunction = this.store.validateForm;
+    }
     const initialValue = this.store.initialValues[fieldId];
     // Options for our Field given upon Form creation
     const options = {
       initialValue,
+      isSchemaValidation,
       showError: props.showError,
       validate: validationFunction,
     };
@@ -58,18 +64,18 @@ class ComponentField extends React.Component {
     const { Component, fieldId, ...restProps } = this.props;
     const {
       error,
-      onBlur,
       onFocus,
       value,
       validateField,
       reset,
+      touched,
     } = this.store.fields[fieldId];
 
     // Value and onChange passed by our Field/Form
     const fieldProperties = {
-      error,
+      error: touched ? error : undefined,
       // Change this to touched: true for schemaValidation
-      onBlur: validateField || onBlur,
+      onBlur: validateField,
       onChange: this.props.onChange ? this.props.onChange : this.onChange,
       onFocus,
       reset,

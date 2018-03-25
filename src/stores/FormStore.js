@@ -164,7 +164,9 @@ export default class Form {
 
         runInAction(() => {
           errorKeys.forEach((fieldKey) => {
-            this.fields[fieldKey].error = errors[fieldKey];
+            if (this.fields[fieldKey].touched) {
+              this.fields[fieldKey].error = errors[fieldKey];
+            }
           });
 
           const formValueKeys = Object.keys(formValues);

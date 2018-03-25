@@ -15,6 +15,7 @@ export default class Field {
   placeholder;
   validate = null;
   initialValue;
+  isSchemaValidation;
 
   // Changing properties
   @observable error; // Did this field error?
@@ -36,12 +37,16 @@ export default class Field {
       throw new Error('Please pass a fieldId to all fields. Passed options:', options);
     }
 
-    const { validate, initialValue, showError } = options;
+    const {
+      validate, initialValue, showError, isSchemaValidation,
+    } = options;
     // Set our fieldId
     this.fieldId = id;
     if (validate) {
       this.validate = validate;
     }
+
+    this.isSchemaValidation = isSchemaValidation;
 
     if (showError !== undefined) {
       this.showError = showError;
@@ -95,23 +100,28 @@ export default class Field {
   onFocus() {
     runInAction(() => {
       // We focus you so remove error for a while until tabbed away
-      this.touched = false;
+      if (!this.value) { this.touched = false; }
     });
   }
 
   @action.bound
   async validateField() {
     // Only validate when we want to see erros and we have a function for it
+    this.onBlur();
     if (this.validate && this.showError) {
-      const error = await this.validate(this.value);
-      runInAction(() => {
-        if (error) {
-          this.error = error;
-        } else {
-          this.isValid = true;
-          this.error = null;
-        }
-      });
+      if (this.isSchemaValidation) {
+        await this.validate();
+      } else {
+        const error = await this.validate(this.value);
+        runInAction(() => {
+          if (error) {
+            this.error = error;
+          } else {
+            this.isValid = true;
+            this.error = null;
+          }
+        });
+      }
     }
   }
 }

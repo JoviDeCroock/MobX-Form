@@ -5,7 +5,7 @@
   "private": false,
   "repository": "https://www.github.com/jovidecroock/mobx-form",
   "license": "MIT",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "main": "dist/index.js",
   "scripts": {
     "build": "NODE_ENV=production ./node_modules/webpack/bin/webpack.js",
@@ -44,6 +44,7 @@
     "eslint-plugin-react": "^7.6.1",
     "istanbul": "^0.4.5",
     "jest": "^22.3.0",
+    "jest-cli": "^22.4.3",
     "prettier": "1.10.2",
     "webpack": "^3.10.0"
   },
