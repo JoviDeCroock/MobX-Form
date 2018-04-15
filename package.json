@@ -5,7 +5,7 @@
   "private": false,
   "repository": "https://www.github.com/jovidecroock/mobx-form",
   "license": "MIT",
-  "version": "0.1.0",
+  "version": "0.1.4",
   "main": "dist/index.js",
   "scripts": {
     "build": "NODE_ENV=production ./node_modules/webpack/bin/webpack.js",
@@ -50,10 +50,10 @@
   },
   "dependencies": {
     "mobx": "^3.5.1",
-    "mobx-react": "^4.4.2",
-    "prop-types": "^15.6.0",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "mobx-react": "^4.4.3",
+    "prop-types": "^15.6.1",
+    "react": "^16.3.1",
+    "react-dom": "^16.3.1"
   },
   "peerDependencies": {
     "mobx": "^2.5.0 || ^3.0.0 || ^4.0.0",

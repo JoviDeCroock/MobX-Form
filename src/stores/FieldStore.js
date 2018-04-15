@@ -80,6 +80,7 @@ export default class Field {
       runInAction(() => {
         this.value = newValue;
         if (newValue) {
+          this.touched = true;
           this.isPristine = false;
         } else {
           this.isPristine = true;
@@ -106,7 +107,7 @@ export default class Field {
 
   @action.bound
   async validateField() {
-    // Only validate when we want to see erros and we have a function for it
+    // Only validate when we want to see errors and we have a function for it
     this.onBlur();
     if (this.validate && this.showError) {
       if (this.isSchemaValidation) {

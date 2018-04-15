@@ -161,14 +161,12 @@ export default class Form {
 
       if (errors) {
         const errorKeys = Object.keys(errors);
-
         runInAction(() => {
           errorKeys.forEach((fieldKey) => {
             if (this.fields[fieldKey].touched) {
               this.fields[fieldKey].error = errors[fieldKey];
             }
           });
-
           const formValueKeys = Object.keys(formValues);
           formValueKeys.filter(key => !errorKeys.includes(key)).forEach((validKey) => {
             this.fields[validKey].error = null;
