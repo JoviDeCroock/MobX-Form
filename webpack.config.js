@@ -50,6 +50,10 @@ module.exports = () => {
     },
     plugins,
     resolve: {
+      alias: {
+        mobx: path.resolve(__dirname, 'node_modules/mobx'),
+        'mobx-react': path.resolve(__dirname, 'node_modules/mobx-react'),
+      },
       extensions: ['.json', '.js'],
       modules: [path.resolve('./node_modules'), path.resolve('./src')],
     },
