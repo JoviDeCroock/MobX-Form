@@ -1,42 +1,55 @@
 const path = require('path');
 const webpack = require('webpack');
 
+const mobxExternal = {
+  amd: 'mobx',
+  commonjs: 'mobx',
+  commonjs2: 'mobx',
+  root: 'Mobx',
+};
+
+const mobxReactExternal = {
+  amd: 'mobx-react',
+  commonjs: 'mobx-react',
+  commonjs2: 'mobx-react',
+  root: 'Mobx-React',
+};
+
+const reactExternal = {
+  amd: 'react',
+  commonjs: 'react',
+  commonjs2: 'react',
+  root: 'React',
+};
+
 module.exports = () => {
   const { NODE_ENV } = process.env;
 
   const plugins = [];
-  plugins.push(new webpack.DefinePlugin({
-    'process.env': { NODE_ENV: JSON.stringify(NODE_ENV) },
-  }));
-
-  plugins.push(new webpack.NamedModulesPlugin());
-  plugins.push(new webpack.NoEmitOnErrorsPlugin());
 
   let externals = {};
 
-  const mainEntry = [];
-  const mobx = 'mobx';
-  const react = 'react';
+  const main = [];
+
   // No need for an uglify plugin since we're building with -p
-  mainEntry.push('./src/index');
+  main.push('./src/index');
   // The dependencies we use in our framework have to bel isted here so our Consumer can install them
   externals = {
-    mobx,
-    'mobx-react': 'mobx-react',
-    react,
+    mobx: mobxExternal,
+    'mobx-react': mobxReactExternal,
+    react: reactExternal,
   };
 
   return {
-    entry: {
-      main: mainEntry,
-    },
+    entry: { main },
     externals,
+    mode: NODE_ENV,
     module: {
       rules: [
         {
-          exclude: /node_modules/,
+          exclude: /node_modules\.*/,
           test: /\.(js)$/,
-          use: ['babel-loader'],
+          use: ['babel-loader?cacheDirectory=true'],
         },
       ],
     },
