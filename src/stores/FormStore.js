@@ -81,6 +81,8 @@ export default class Form {
       runInAction(() => {
         this.fields[fieldId].onChange(value);
       });
+    } else {
+      this.fields[fieldId] = { value };
     }
   }
 
@@ -127,7 +129,7 @@ export default class Form {
   patchValues(newValues) {
     // Needs to be an object
     if (typeof newValues !== 'object') {
-      console.warn('Forms need a handleSubmit function to work.');
+      console.warn('Forms the new<values need to be off the object type.');
       return;
     }
 
@@ -138,7 +140,7 @@ export default class Form {
         if (value) {
           value.onChange(newValues[key]);
         } else {
-          console.warn(`You have not defined a field with key ${key}`);
+          this.fields[key] = { value: newValues[key] };
         }
       });
     });
