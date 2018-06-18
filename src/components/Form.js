@@ -17,10 +17,13 @@ const createForm = options => function renderForm(Component) {
 
     constructor(props) {
       super(props);
+      // Allow prop passing as <Form {...properties} /> and with Form({ ...properties }).
+      // These will be merged, with the Form HOC having higher prio than the JSX properties.
       const newOptions = { ...options, ...props };
       this.formStore = new FormStore(newOptions);
     }
 
+    // TODO: new React context support!
     getChildContext() {
       const stores = {};
       // add own stores

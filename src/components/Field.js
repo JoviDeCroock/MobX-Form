@@ -6,16 +6,16 @@ import Field from '../stores/FieldStore';
 
 @observer
 class ComponentField extends React.Component {
-  static contextTypes = {
-    formStore: PropTypes.object,
-  }
-
   static propTypes = {
     Component: PropTypes.func.isRequired,
     fieldId: PropTypes.string.isRequired,
     onChange: PropTypes.func,
     placeholder: PropTypes.string,
     showError: PropTypes.bool,
+  }
+
+  static contextTypes = {
+    formStore: PropTypes.object,
   }
 
   static defaultProps = {

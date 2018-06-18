@@ -1,7 +1,6 @@
+/* eslint-disable no-console */
 import FormStore from '../../src/stores/FormStore';
 import FieldStore from '../../src/stores/FieldStore';
-
-// eslint-disable-rule no-undef
 
 describe('FormStore', () => {
   // Mocked preventDefault for onSubmit
@@ -101,6 +100,7 @@ describe('FormStore', () => {
         if (value.length <= 3) {
           return 'error';
         }
+        return null;
       },
     };
 
@@ -128,6 +128,7 @@ describe('FormStore', () => {
         if (value.length <= 3) {
           return 'error';
         }
+        return null;
       },
     };
     const initialValues = {
@@ -149,6 +150,7 @@ describe('FormStore', () => {
   });
 
   it('should call onError when crashing', async () => {
+    // eslint-disable-next-line
     const handleSubmit = () => { x = y; };
     const onError = er => console.log(er);
 
@@ -167,6 +169,7 @@ describe('FormStore', () => {
   });
 
   it('should call onError when crashing', async () => {
+    // eslint-disable-next-line
     const handleSubmit = () => { x = y; };
 
     const initialValues = {
@@ -239,11 +242,13 @@ describe('FormStore', () => {
 
     expect(formStore.fields.testField.value).toEqual('Rik');
     formStore.patchValues({ testField: 'patched', testField2: 'non existing' });
+    // Non existing should patch in case of for example a new id
     expect(formStore.fields.testField.value).toEqual('patched');
-    expect(formStore.fields.testField2).toEqual(undefined);
+    expect(formStore.fields.testField2.value).toEqual('non existing');
+    // Fail case
     formStore.patchValues('testField');
     expect(formStore.fields.testField.value).toEqual('patched');
-    expect(formStore.fields.testField2).toEqual(undefined);
+    expect(formStore.fields.testField2.value).toEqual('non existing');
   });
 
   it('should reset all fields', () => {

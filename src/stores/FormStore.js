@@ -137,6 +137,7 @@ export default class Form {
     transaction(() => {
       Object.keys(newValues).forEach((key) => {
         const value = this.fields[key];
+        console.log('key', value);
         if (value) {
           value.onChange(newValues[key]);
         } else {
