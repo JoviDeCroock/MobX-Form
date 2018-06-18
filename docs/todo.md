@@ -1,16 +1,13 @@
-TodoList
+# Todo
 
 - Tests
   - component testing
+- React
+  - use new context api
 - Form
-  - name form
+  - name form so we can recover formState if the consumer wants this
 - FieldGroup
-  - handle props
-  - remove field
-  - add field
-  - clear fields
-  - enumerate fields
-- Validate
-  - Test serverside validation
-
-Open to suggestions
+  - handle props (!) --> analyse workflow for this
+  - remove field (!) --> values without having a field
+  - add field (!) --> adding fields on the fly
+  - enumerate fields, tabIndex etc
