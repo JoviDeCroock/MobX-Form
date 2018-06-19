@@ -19,7 +19,5 @@ When working with MobX i noticed that there were a variety off well-written libr
 - [API](https://github.com/JoviDeCroock/MobX-Form/blob/master/docs/api.md)
 - [Example](https://github.com/JoviDeCroock/MobX-Form/tree/master/example)
 - [Todo](https://github.com/JoviDeCroock/MobX-Form/blob/master/docs/todo.md)
-
-# Contributing
-
-`Master` is a  protected branch so when trying to contribute try to branch off from `Master`, make your changes, submit a PR and then we'll discuss on the topic. Let's work together to make this a beautifull library.
+- [Running](https://github.com/JoviDeCroock/MobX-Form/blob/master/docs/running.md)
+- [Contributing](https://github.com/JoviDeCroock/MobX-Form/blob/master/contributing.md)
