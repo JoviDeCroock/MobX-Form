@@ -1,7 +1,6 @@
+/* eslint-disable no-console */
 import FormStore from '../../src/stores/FormStore';
 import FieldStore from '../../src/stores/FieldStore';
-
-// eslint-disable-rule no-undef
 
 describe('FormStore', () => {
   // Mocked preventDefault for onSubmit
@@ -50,11 +49,11 @@ describe('FormStore', () => {
 
   it('Should succesfully add validators.', () => {
     const handleSubmit = () => console.log('hello');
-    const validators = {
+    const validate = {
       func: () => console.log('Validating text'),
     };
 
-    const formStore = new FormStore({ handleSubmit, validators });
+    const formStore = new FormStore({ handleSubmit, validate });
     expect(typeof formStore.validators.func).toEqual('function');
   });
 
@@ -70,12 +69,12 @@ describe('FormStore', () => {
 
   it('Should succesfully add validator functions and ignore non functions.', () => {
     const handleSubmit = () => console.log('hello');
-    const validators = {
+    const validate = {
       func: () => console.log('Validating text'),
       nonFunc: 'herrow',
     };
 
-    const formStore = new FormStore({ handleSubmit, validators });
+    const formStore = new FormStore({ handleSubmit, validate });
     expect(typeof formStore.validators.func).toEqual('function');
     expect(formStore.validators.nonFunc).toEqual(undefined);
   });
@@ -101,6 +100,7 @@ describe('FormStore', () => {
         if (value.length <= 3) {
           return 'error';
         }
+        return null;
       },
     };
 
@@ -121,34 +121,36 @@ describe('FormStore', () => {
     expect(formStore.error).toEqual(null);
   });
 
-  it('should not submit when invalid', () => {
+  it('should not submit when invalid', async () => {
     const handleSubmit = () => console.log('hello');
-    const validators = {
+    const validate = {
       testField: (value) => {
         if (value.length <= 3) {
           return 'error';
         }
+        return null;
       },
     };
     const initialValues = {
       testField: 'Rik',
     };
 
-    const formStore = new FormStore({ handleSubmit, initialValues, validators });
+    const formStore = new FormStore({ handleSubmit, initialValues, validate });
     formStore.addField(new FieldStore('testField', {
       initialValue: initialValues.testField,
-      validate: validators.testField,
+      validate: validate.testField,
     }));
 
-    formStore.onSubmit();
+    await formStore.onSubmit();
     expect(formStore.fields.testField.error).toEqual('error');
     formStore.onChange('testField', 'Riki');
     expect(formStore.fields.testField.value).toEqual('Riki');
-    formStore.onSubmit();
+    await formStore.onSubmit();
     expect(formStore.fields.testField.error).toEqual(null);
   });
 
-  it('should call onError when crashing', () => {
+  it('should call onError when crashing', async () => {
+    // eslint-disable-next-line
     const handleSubmit = () => { x = y; };
     const onError = er => console.log(er);
 
@@ -161,12 +163,13 @@ describe('FormStore', () => {
       initialValue: initialValues.testField,
     }));
 
-    formStore.onSubmit();
+    await formStore.onSubmit();
     console.log(onError);
-    expect(formStore.error).toBeInstanceOf(Error);
+    expect(formStore.error).toEqual('y is not defined');
   });
 
-  it('should call onError when crashing', () => {
+  it('should call onError when crashing', async () => {
+    // eslint-disable-next-line
     const handleSubmit = () => { x = y; };
 
     const initialValues = {
@@ -178,12 +181,12 @@ describe('FormStore', () => {
       initialValue: initialValues.testField,
     }));
 
-    formStore.onSubmit();
-    expect(formStore.error).toBeInstanceOf(Error);
+    await formStore.onSubmit();
+    expect(formStore.error).toEqual('y is not defined');
   });
 
 
-  it('should validate single fields', () => {
+  it('should validate single fields', async () => {
     const handleSubmit = () => console.log('hello');
     const validators = {
       testField: (value) => {
@@ -203,15 +206,16 @@ describe('FormStore', () => {
       validate: validators.testField,
     }));
 
-    formStore.validateField('testField');
+    await formStore.validateField('testField');
     expect(formStore.fields.testField.error).toEqual('error');
     formStore.onChange(null, 'Riki');
     formStore.onChange('testField', 'Riki');
     expect(formStore.fields.testField.value).toEqual('Riki');
-    formStore.validateField('testField');
+    await formStore.validateField('testField');
     expect(formStore.fields.testField.error).toEqual(null);
-    formStore.validateField();
+    await formStore.validateField();
     expect(formStore.fields.testField.error).toEqual(null);
+
     formStore.onChange('testField');
     expect(formStore.fields.testField.value).toEqual(null);
   });
@@ -238,11 +242,13 @@ describe('FormStore', () => {
 
     expect(formStore.fields.testField.value).toEqual('Rik');
     formStore.patchValues({ testField: 'patched', testField2: 'non existing' });
+    // Non existing should patch in case of for example a new id
     expect(formStore.fields.testField.value).toEqual('patched');
-    expect(formStore.fields.testField2).toEqual(undefined);
+    expect(formStore.fields.testField2.value).toEqual('non existing');
+    // Fail case
     formStore.patchValues('testField');
     expect(formStore.fields.testField.value).toEqual('patched');
-    expect(formStore.fields.testField2).toEqual(undefined);
+    expect(formStore.fields.testField2.value).toEqual('non existing');
   });
 
   it('should reset all fields', () => {
@@ -266,5 +272,43 @@ describe('FormStore', () => {
     formStore.resetFields();
     expect(formStore.fields.testField.value).toEqual(initialValues.testField);
     expect(formStore.fields.testField2.value).toEqual('');
+  });
+
+  it('should schemaValidate', async () => {
+    const error = 'must match';
+    const error2 = 'should match';
+    const handleSubmit = () => console.log('hello');
+    const initialValues = {
+      testField: 'Rik',
+      testField2: 'Riki',
+    };
+    const validate = (values) => {
+      console.log(values);
+      const { testField, testField2 } = values;
+      if (testField !== testField2) {
+        return { testField: error, testField2: error2 };
+      }
+      return null;
+    };
+
+    const formStore = new FormStore({ handleSubmit, initialValues, validate });
+    formStore.addField(new FieldStore('testField', {
+      initialValue: initialValues.testField,
+    }));
+    formStore.addField(new FieldStore('testField2'));
+
+    expect(formStore.isSchemaValidation).toBeTruthy();
+    formStore.fields.testField.onBlur();
+    let valid = await formStore.validateForm();
+    expect(formStore.fields.testField.error).toEqual(error);
+    expect(formStore.fields.testField2.error).toEqual(undefined);
+    expect(valid).toBeFalsy();
+    await formStore.onSubmit();
+    formStore.onChange('testField2', 'Rik');
+    valid = await formStore.validateForm();
+    expect(formStore.fields.testField.error).toEqual(null);
+    expect(formStore.fields.testField2.error).toEqual(null);
+    expect(valid).toBeTruthy();
+    await formStore.onSubmit();
   });
 });

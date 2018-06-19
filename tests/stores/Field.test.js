@@ -81,7 +81,7 @@ describe('FieldStore', () => {
     expect(fieldStore.value).toEqual('Rikii');
   });
 
-  it('Validate should work', () => {
+  it('Validate should work', async () => {
     const error = 'Length';
     const validateFunc = (value) => { if (value.length <= 3) { return error; } return null; };
     const initialValue = 'Rik';
@@ -91,11 +91,11 @@ describe('FieldStore', () => {
     });
 
     expect(fieldStore.error).toEqual(undefined);
-    fieldStore.validateField();
+    await fieldStore.validateField();
     expect(fieldStore.error).toEqual(error);
     expect(fieldStore.isValid).toEqual(false);
     fieldStore.onChange('Rikii');
-    fieldStore.validateField();
+    await fieldStore.validateField();
     expect(fieldStore.error).toEqual(null);
     expect(fieldStore.isValid).toEqual(true);
   });
@@ -118,5 +118,14 @@ describe('FieldStore', () => {
     expect(fieldStore2.value).toEqual('Rikii');
     fieldStore2.reset();
     expect(fieldStore2.value).toEqual('');
+  });
+
+  it('Should touch the field when blurring,', () => {
+    const fieldStore = new FieldStore('testField');
+    expect(fieldStore.touched).toBeFalsy();
+    fieldStore.onBlur();
+    expect(fieldStore.touched).toBeTruthy();
+    fieldStore.onFocus();
+    expect(fieldStore.touched).toBeFalsy();
   });
 });
