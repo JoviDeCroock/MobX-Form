@@ -8,6 +8,7 @@ import Field from '../stores/FieldStore';
 class ComponentField extends React.Component {
   static propTypes = {
     Component: PropTypes.func.isRequired,
+    destroyOnUnmount: PropTypes.bool,
     fieldId: PropTypes.string.isRequired,
     onChange: PropTypes.func,
     placeholder: PropTypes.string,
@@ -19,6 +20,7 @@ class ComponentField extends React.Component {
   }
 
   static defaultProps = {
+    destroyOnUnmount: true,
     placeholder: null,
     showError: true,
   }
@@ -49,14 +51,18 @@ class ComponentField extends React.Component {
     this.field = field;
     // Add created field to our formStore
     this.store.addField(field);
+    this.onChange = this.onChange.bind(this);
   }
 
   componentWillUnmount() {
     // No residual values! Clean up your doodoo's
-    this.field.reset();
+    const { destroyOnUnmount } = this.props;
+    if (destroyOnUnmount) {
+      this.store.reset();
+    }
   }
 
-  onChange = (value) => {
+  onChange(value) {
     this.store.onChange(this.props.fieldId, value);
   }
 
@@ -81,6 +87,10 @@ class ComponentField extends React.Component {
       reset,
       value,
     };
+
+    if (this.props.onChange) {
+      console.warn(`Seems like you passed your own onChange to ${fieldId}, make sure you talk to the "change" injected by Form. If you are not already.`);
+    }
 
     return (
       <Component
