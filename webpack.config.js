@@ -23,13 +23,8 @@ const reactExternal = {
 
 module.exports = () => {
   const { NODE_ENV } = process.env;
-
-  const plugins = [];
-
   let externals = {};
-
   const main = [];
-
   // No need for an uglify plugin since we're building with -p
   main.push('./src/index');
   // The dependencies we use in our framework have to bel isted here so our Consumer can install them
@@ -60,7 +55,6 @@ module.exports = () => {
       publicPath: '/',
       umdNamedDefine: true,
     },
-    plugins,
     resolve: {
       alias: {
         mobx: path.resolve(__dirname, 'node_modules/mobx'),

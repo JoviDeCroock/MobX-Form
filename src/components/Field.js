@@ -1,22 +1,20 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 
+import { Consumer } from './createContext';
 import Field from '../stores/FieldStore';
 
 @observer
-class ComponentField extends React.Component {
+class ComponentField extends PureComponent {
   static propTypes = {
     Component: PropTypes.func.isRequired,
     destroyOnUnmount: PropTypes.bool,
     fieldId: PropTypes.string.isRequired,
+    formStore: PropTypes.object.isRequired,
     onChange: PropTypes.func,
     placeholder: PropTypes.string,
     showError: PropTypes.bool,
-  }
-
-  static contextTypes = {
-    formStore: PropTypes.object,
   }
 
   static defaultProps = {
@@ -25,12 +23,17 @@ class ComponentField extends React.Component {
     showError: true,
   }
 
-  constructor(props, context) {
+  constructor(props) {
     super(props);
-    const { fieldId } = props;
+    const { formStore, fieldId } = props;
+    if (!formStore) {
+      throw new Error('The "Field" Component must be inside a "Form" Component.');
+    }
+    this.store = formStore;
 
-    // Bind our formStore from context to our this
-    this.store = context.formStore.form;
+    if (props.onChange) {
+      console.warn(`Seems like you passed your own onChange to ${fieldId}, make sure you talk to the "change" injected by Form. If you are not already.`);
+    }
 
     let validationFunction = this.store.validators[fieldId];
     const { isSchemaValidation } = this.store;
@@ -88,10 +91,6 @@ class ComponentField extends React.Component {
       value,
     };
 
-    if (this.props.onChange) {
-      console.warn(`Seems like you passed your own onChange to ${fieldId}, make sure you talk to the "change" injected by Form. If you are not already.`);
-    }
-
     return (
       <Component
         {...restProps}
@@ -100,4 +99,8 @@ class ComponentField extends React.Component {
   }
 }
 
-export default ComponentField;
+export default props => (
+  <Consumer>
+    {formStore => <ComponentField formStore={formStore} {...props} />}
+  </Consumer>
+);
