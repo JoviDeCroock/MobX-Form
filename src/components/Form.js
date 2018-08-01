@@ -1,12 +1,12 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
 
-import Provider from './createContext';
+import { Provider } from './createContext';
 import FormStore from '../stores/FormStore';
 
 const createForm = options => function renderForm(Component) {
   @observer
-  class Form extends PureComponent {
+  class Form extends React.Component {
     constructor(props) {
       super(props);
       // Allow prop passing as <Form {...properties} /> and with Form({ ...properties }).

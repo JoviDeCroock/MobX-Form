@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 
@@ -6,7 +6,7 @@ import { Consumer } from './createContext';
 import Field from '../stores/FieldStore';
 
 @observer
-class ComponentField extends PureComponent {
+class ComponentField extends React.Component {
   static propTypes = {
     Component: PropTypes.func.isRequired,
     destroyOnUnmount: PropTypes.bool,
