@@ -18,7 +18,7 @@ class Field extends React.Component {
   }
 
   static defaultProps = {
-    destroyOnUnmount: true,
+    destroyOnUnmount: false,
     placeholder: null,
     showError: true,
   }
@@ -77,7 +77,7 @@ class Field extends React.Component {
       validateField,
       reset,
       touched,
-    } = this.store.fields[fieldId];
+    } = this.field;
 
     // Value and onChange passed by our Field/Form
     const fieldProperties = {

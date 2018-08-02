@@ -68,16 +68,41 @@ export default class Form {
   }
 
   @action.bound
-  addField(field) {
-    // No validation needed since this isn't an exposed action
+  addFieldSection(field) {
     this.fields[field.fieldId] = field;
+  }
+
+  determineField(fieldId) {
+    let bufferValue;
+    const parts = fieldId.split('.');
+    parts.forEach((part) => {
+      const bufferField = bufferValue ? bufferValue[part] : this.fields[part];
+      if (bufferField && (bufferField.isFieldSection || bufferField.isFieldArray)) {
+        bufferValue = bufferField;
+      }
+    });
+    return { lastFieldIdPart: parts[parts.length - 1], origin: bufferValue };
+  }
+
+  @action.bound
+  addField(field) {
+    if (field.fieldId.includes('.')) {
+      const { origin, lastFieldIdPart } = this.determineField(field.fieldId);
+      origin.values[lastFieldIdPart] = field;
+    } else {
+      this.fields[field.fieldId] = field;
+    }
   }
 
   @action.bound
   onChange(fieldId, value = null) {
-    // Exposed action be carefull for crashes
     if (!fieldId) { console.warn('Please pass a valid fieldId when onChanging from the FormInstance.'); }
-    if (this.fields[fieldId]) {
+    if (fieldId.includes('.')) {
+      runInAction(() => {
+        const { origin, lastFieldIdPart } = this.determineField(fieldId);
+        origin.values[lastFieldIdPart].onChange(value);
+      });
+    } else if (this.fields[fieldId]) {
       runInAction(() => {
         this.fields[fieldId].onChange(value);
       });
@@ -132,12 +157,10 @@ export default class Form {
       console.warn('Forms the new<values need to be off the object type.');
       return;
     }
-
     // DO it transactionally to avoid unneeded rerenders
     transaction(() => {
       Object.keys(newValues).forEach((key) => {
         const value = this.fields[key];
-        console.log('key', value);
         if (value) {
           value.onChange(newValues[key]);
         } else {
