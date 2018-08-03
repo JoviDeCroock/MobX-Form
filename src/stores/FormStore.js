@@ -69,26 +69,17 @@ export default class Form {
 
   @action.bound
   addFieldSection(field) {
-    this.fields[field.fieldId] = field;
-  }
-
-  determineField(fieldId) {
-    let bufferValue;
-    const parts = fieldId.split('.');
-    parts.forEach((part) => {
-      const bufferField = bufferValue ? bufferValue[part] : this.fields[part];
-      if (bufferField && (bufferField.isFieldSection || bufferField.isFieldArray)) {
-        bufferValue = bufferField;
-      }
-    });
-    return { lastFieldIdPart: parts[parts.length - 1], origin: bufferValue };
+    if (field.fieldId.includes('.')) {
+      this.fields[field.fieldId.split('.')[0]].addField(field, 1);
+    } else {
+      this.fields[field.fieldId] = field;
+    }
   }
 
   @action.bound
   addField(field) {
     if (field.fieldId.includes('.')) {
-      const { origin, lastFieldIdPart } = this.determineField(field.fieldId);
-      origin.values[lastFieldIdPart] = field;
+      this.fields[field.fieldId.split('.')[0]].addField(field, 1);
     } else {
       this.fields[field.fieldId] = field;
     }
@@ -98,14 +89,10 @@ export default class Form {
   onChange(fieldId, value = null) {
     if (!fieldId) { console.warn('Please pass a valid fieldId when onChanging from the FormInstance.'); }
     if (fieldId.includes('.')) {
-      runInAction(() => {
-        const { origin, lastFieldIdPart } = this.determineField(fieldId);
-        origin.values[lastFieldIdPart].onChange(value);
-      });
+      const parts = fieldId.split('.');
+      runInAction(() => this.fields[parts[0]].onChange(fieldId, value, 0));
     } else if (this.fields[fieldId]) {
-      runInAction(() => {
-        this.fields[fieldId].onChange(value);
-      });
+      runInAction(() => { this.fields[fieldId].onChange(value); });
     } else {
       this.fields[fieldId] = { value };
     }
@@ -122,7 +109,13 @@ export default class Form {
     if (isValid) {
       const values = {};
       Object.keys(this.fields).forEach((key) => {
-        values[key] = this.fields[key].value;
+        const field = this.fields[key];
+        if (field.isFieldSection) {
+          // Try a getValues function maybe so we can handle the tree recursively.
+          values[key] = field.fieldValues;
+        } else if (field.isField) {
+          values[key] = field.value;
+        }
       });
       try {
         // See Promise.resolve(function(){ return x })
@@ -207,7 +200,11 @@ export default class Form {
       }
     } else {
       await Object.values(this.fields).forEach(async (field) => {
-        await field.validateField();
+        if (field.isFieldSection) {
+          await field.validateFields();
+        } else {
+          await field.validateField();
+        }
         // If this produces an error we aren't valid anymore (underlying will display this aswell)
         if (field.error) {
           isValid = false;
