@@ -65,7 +65,7 @@ class Field extends React.Component {
   }
 
   onChange(value) {
-    this.store.onChange(this.props.fieldId, value);
+    this.field.onChange(value);
   }
 
   render() {
