@@ -35,6 +35,52 @@ export default class FieldSection {
   }
 
   @action.bound
+  setErrors(errors = {}) {
+    console.log('Setting errors ', errors);
+    const errorKeys = Object.keys(errors);
+    runInAction(() => {
+      errorKeys.forEach((fieldKey) => {
+        if (this.fields[fieldKey]) {
+          console.error(`Can't find field with id "${fieldKey}" provided in your validators.`);
+          return;
+        }
+        if (typeof errors[fieldKey] === 'object') {
+          this.fields[fieldKey].setErrors(errors[fieldKey]);
+        }
+        if (this.fields[fieldKey].touched) {
+          this.fields[fieldKey].error = errors[fieldKey];
+        }
+      });
+      const formValueKeys = Object.keys(this.fields);
+      // TODO: in need of refactor for fieldsections.
+      formValueKeys.filter(key => !errorKeys.includes(key)).forEach((validKey) => {
+        this.fields[validKey].error = null;
+      });
+    });
+  }
+
+  @action.bound
+  patchValue(key, value) {
+    if (typeof value === 'object') {
+      Object.keys(value).forEach((subKey) => {
+        const subField = this.fields[subKey];
+        if (!subField) {
+          console.error(`Can't find field with id "${subKey}" provided in patchValues.`);
+          return;
+        }
+        if (subField.isFieldSection) {
+          subField.patchValue(subKey, value[subKey]);
+        } else {
+          subField.onChange(value[subKey]);
+        }
+      });
+    } else {
+      const field = this.fields[key];
+      field.onChange(value);
+    }
+  }
+
+  @action.bound
   addField(field, currentIndex) {
     const parts = field.fieldId.split('.');
     if (currentIndex === parts.length - 1) {
@@ -46,8 +92,16 @@ export default class FieldSection {
 
   @action.bound
   validateFields() {
-    // TODO
-    return null;
+    runInAction(() => {
+      Object.values(this.fields).forEach((field) => {
+        if (field.isField) {
+          return field.validate();
+        } else if (field.isFieldSection) {
+          return field.validateFields();
+        }
+        return null;
+      });
+    });
   }
 
   @action.bound

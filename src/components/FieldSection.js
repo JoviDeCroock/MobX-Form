@@ -15,9 +15,7 @@ class FieldSection extends React.Component {
     render: PropTypes.func.isRequired,
   }
 
-  static defaultProps = {
-    destroyOnUnmount: false,
-  }
+  static defaultProps = { destroyOnUnmount: false }
 
   constructor(props) {
     super(props);
@@ -31,7 +29,7 @@ class FieldSection extends React.Component {
     // Bind it to this since we'll have to use it more than once
     this.fieldSection = fieldSection;
     // Add created field to our formStore
-    this.store.addFieldSection(fieldSection);
+    formStore.addFieldSection(fieldSection);
   }
 
   componentWillUnmount() {
@@ -44,7 +42,6 @@ class FieldSection extends React.Component {
 
   render() {
     const { render, fieldId, extraProps } = this.props;
-
     return render(fieldId, extraProps);
   }
 }

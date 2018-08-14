@@ -208,7 +208,6 @@ describe('FormStore', () => {
 
     await formStore.validateField('testField');
     expect(formStore.fields.testField.error).toEqual('error');
-    formStore.onChange(null, 'Riki');
     formStore.onChange('testField', 'Riki');
     expect(formStore.fields.testField.value).toEqual('Riki');
     await formStore.validateField('testField');

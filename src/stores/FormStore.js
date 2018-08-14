@@ -59,7 +59,23 @@ export default class Form {
     this.handleSubmit = handleSubmit;
     this.onSuccess = onSuccess || null;
     this.onError = onError || null;
-    this.initialValues = initialValues || {};
+    if (initialValues) {
+      // this.patchValues(initialValues);
+    }
+  }
+
+  get fieldValues() {
+    const values = {};
+    Object.keys(this.fields).forEach((key) => {
+      const field = this.fields[key];
+      if (field.isFieldSection) {
+        // Try a getValues function maybe so we can handle the tree recursively.
+        values[key] = field.fieldValues;
+      } else if (field.isField) {
+        values[key] = field.value;
+      }
+    });
+    return values;
   }
 
   @action.bound
@@ -107,16 +123,7 @@ export default class Form {
 
     const isValid = await this.validateForm();
     if (isValid) {
-      const values = {};
-      Object.keys(this.fields).forEach((key) => {
-        const field = this.fields[key];
-        if (field.isFieldSection) {
-          // Try a getValues function maybe so we can handle the tree recursively.
-          values[key] = field.fieldValues;
-        } else if (field.isField) {
-          values[key] = field.value;
-        }
-      });
+      const values = this.fieldValues;
       try {
         // See Promise.resolve(function(){ return x })
         // Will work for normal functions aswell
@@ -147,17 +154,20 @@ export default class Form {
   patchValues(newValues) {
     // Needs to be an object
     if (typeof newValues !== 'object') {
-      console.warn('Forms the new<values need to be off the object type.');
+      console.warn(`Forms the newValues need to be off the object typen, received "${typeof newValues}".`);
       return;
     }
     // DO it transactionally to avoid unneeded rerenders
     transaction(() => {
       Object.keys(newValues).forEach((key) => {
         const value = this.fields[key];
-        if (value) {
-          value.onChange(newValues[key]);
+        if (!value) {
+          console.error(`Can't find field with id "${key}" provided in patchValues.`);
+        }
+        if (value.isFieldSection) {
+          value.patchValue(key, newValues[key]);
         } else {
-          this.fields[key] = { value: newValues[key] };
+          value.onChange(newValues[key]);
         }
       });
     });
@@ -171,17 +181,19 @@ export default class Form {
     // Run all of our validates in an action
     if (this.isSchemaValidation) {
       // Schema
-      const formValues = Object.keys(this.fields).reduce((acc, fieldKey) => {
-        acc[fieldKey] = this.fields[fieldKey].value;
-        return acc;
-      }, {});
-
+      const formValues = this.fieldValues;
       const errors = await this.validate(formValues);
-
       if (errors) {
         const errorKeys = Object.keys(errors);
         runInAction(() => {
           errorKeys.forEach((fieldKey) => {
+            if (this.fields[fieldKey]) {
+              console.error(`Can't find field with id "${fieldKey}" provided in your validators.`);
+              return;
+            }
+            if (typeof errors[fieldKey] === 'object') {
+              this.fields[fieldKey].setErrors(errors[fieldKey]);
+            }
             if (this.fields[fieldKey].touched) {
               this.fields[fieldKey].error = errors[fieldKey];
             }
@@ -211,7 +223,6 @@ export default class Form {
         }
       });
     }
-
     // Return this in case we are submitting/force validating in UI
     return isValid;
   }
