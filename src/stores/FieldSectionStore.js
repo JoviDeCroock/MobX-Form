@@ -34,13 +34,14 @@ export default class FieldSection {
     }, {});
   }
 
+  // TODO: onChange functionality
+
   @action.bound
   setErrors(errors = {}) {
-    console.log('Setting errors ', errors);
     const errorKeys = Object.keys(errors);
     runInAction(() => {
       errorKeys.forEach((fieldKey) => {
-        if (this.fields[fieldKey]) {
+        if (!this.fields[fieldKey]) {
           console.error(`Can't find field with id "${fieldKey}" provided in your validators.`);
           return;
         }
@@ -52,7 +53,6 @@ export default class FieldSection {
         }
       });
       const formValueKeys = Object.keys(this.fields);
-      // TODO: in need of refactor for fieldsections.
       formValueKeys.filter(key => !errorKeys.includes(key)).forEach((validKey) => {
         this.fields[validKey].error = null;
       });
@@ -76,6 +76,10 @@ export default class FieldSection {
       });
     } else {
       const field = this.fields[key];
+      if (!field) {
+        console.error(`Can't find field with id "${key}" provided in patchValues.`);
+        return;
+      }
       field.onChange(value);
     }
   }

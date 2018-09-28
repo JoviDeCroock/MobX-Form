@@ -240,14 +240,12 @@ describe('FormStore', () => {
     }));
 
     expect(formStore.fields.testField.value).toEqual('Rik');
-    formStore.patchValues({ testField: 'patched', testField2: 'non existing' });
+    formStore.patchValues({ testField: 'patched' });
     // Non existing should patch in case of for example a new id
     expect(formStore.fields.testField.value).toEqual('patched');
-    expect(formStore.fields.testField2.value).toEqual('non existing');
     // Fail case
     formStore.patchValues('testField');
     expect(formStore.fields.testField.value).toEqual('patched');
-    expect(formStore.fields.testField2.value).toEqual('non existing');
   });
 
   it('should reset all fields', () => {
@@ -282,7 +280,6 @@ describe('FormStore', () => {
       testField2: 'Riki',
     };
     const validate = (values) => {
-      console.log(values);
       const { testField, testField2 } = values;
       if (testField !== testField2) {
         return { testField: error, testField2: error2 };

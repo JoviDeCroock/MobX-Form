@@ -59,9 +59,7 @@ export default class Form {
     this.handleSubmit = handleSubmit;
     this.onSuccess = onSuccess || null;
     this.onError = onError || null;
-    if (initialValues) {
-      // this.patchValues(initialValues);
-    }
+    this.initialValues = initialValues;
   }
 
   get fieldValues() {
@@ -187,7 +185,7 @@ export default class Form {
         const errorKeys = Object.keys(errors);
         runInAction(() => {
           errorKeys.forEach((fieldKey) => {
-            if (this.fields[fieldKey]) {
+            if (!this.fields[fieldKey]) {
               console.error(`Can't find field with id "${fieldKey}" provided in your validators.`);
               return;
             }
