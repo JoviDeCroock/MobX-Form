@@ -1,5 +1,9 @@
 # Pre-Release
 
+## 0.3.0
+
+FieldArrays
+
 ## 0.2.0
 
 Sorry for me being absent for this long this has been a really busy time for me, but the OSS community has my full dedication again.
@@ -9,13 +13,13 @@ Sorry for me being absent for this long this has been a really busy time for me,
 - `patchValues` now allows unknown Fields to support id values
 - We now support `schemaValidation`, this implies you can integrate joi etc and not only singleField valiation.
 - Introduced field resetters.
+- FieldSections!
 
 ### Trivial
 
-- Upgrade `webpack` to `4.12`
+- Overhaul way of building
 - Added `.npmignore` to reduce bundleSize.
-- Updated `.travis.yml` to nodejs 7
-- Added `mobx` and `mobx-react` to `webpack externals` so we're sure the consumer' MobX instance gets called.
+- Updated `.travis.yml` to nodejs 9.10
 - Added `running` in documentation
 
 ## 0.0.6
