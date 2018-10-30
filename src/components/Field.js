@@ -33,7 +33,6 @@ class Field extends React.Component {
     if (props.onChange) {
       console.warn(`Seems like you passed your own onChange to ${fieldId}, make sure you talk to the "change" injected by Form. If you are not already.`);
     }
-
     let validationFunction = this.store.validators[fieldId];
     const { isSchemaValidation } = this.store;
     this.isSchemaValidation = isSchemaValidation;

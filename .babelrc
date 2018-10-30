@@ -1,11 +1,17 @@
 {
   "presets": [
-    "react",
-    "env",
-    "stage-0"
+    "@babel/preset-react",
+    ["@babel/preset-env", {
+      "modules": false,
+      "targets": {
+        "browsers": ["ie >= 11"]
+      },
+      "loose": true
+    }]
   ],
   "plugins": [
-    "transform-runtime",
-    "transform-decorators-legacy"
+    "@babel/plugin-transform-runtime",
+    ["@babel/plugin-proposal-decorators", { "legacy": true}],
+    ["@babel/plugin-proposal-class-properties", { "loose": true}]
   ]
 }
