@@ -34,8 +34,6 @@ export default class FieldSection {
     }, {});
   }
 
-  // TODO: onChange functionality
-
   @action.bound
   setErrors(errors = {}) {
     const errorKeys = Object.keys(errors);

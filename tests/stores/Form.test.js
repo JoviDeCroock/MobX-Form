@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import FormStore from '../../src/stores/FormStore';
 import FieldStore from '../../src/stores/FieldStore';
+import FieldSectionStore from '../../src/stores/FieldSectionStore';
 
 describe('FormStore', () => {
   // Mocked preventDefault for onSubmit
@@ -269,6 +270,17 @@ describe('FormStore', () => {
     formStore.resetFields();
     expect(formStore.fields.testField.value).toEqual(initialValues.testField);
     expect(formStore.fields.testField2.value).toEqual('');
+  });
+
+  it('Should add a fieldSection', async () => {
+    const handleSubmit = () => console.log('hello');
+    const formStore = new FormStore({ handleSubmit });
+    formStore.addFieldSection(new FieldSectionStore('testField'));
+    formStore.addFieldSection(new FieldStore('testField3'));
+    formStore.addFieldSection(new FieldSectionStore('testField.test2'));
+    const values = formStore.fieldValues;
+    expect(values).toHaveProperty('testField');
+    expect(values.testField).toHaveProperty('test2');
   });
 
   it('should schemaValidate', async () => {
