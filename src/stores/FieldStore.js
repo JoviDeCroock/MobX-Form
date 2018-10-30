@@ -16,6 +16,7 @@ export default class Field {
   validate = null;
   initialValue;
   isSchemaValidation;
+  isField = true;
 
   // Changing properties
   @observable error; // Did this field error?

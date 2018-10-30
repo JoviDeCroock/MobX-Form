@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 
 import { Consumer } from './createContext';
-import Field from '../stores/FieldStore';
+import FieldStore from '../stores/FieldStore';
 
 @observer
-class ComponentField extends React.Component {
+class Field extends React.Component {
   static propTypes = {
     Component: PropTypes.func.isRequired,
     destroyOnUnmount: PropTypes.bool,
@@ -18,7 +18,7 @@ class ComponentField extends React.Component {
   }
 
   static defaultProps = {
-    destroyOnUnmount: true,
+    destroyOnUnmount: false,
     placeholder: null,
     showError: true,
   }
@@ -30,7 +30,6 @@ class ComponentField extends React.Component {
       throw new Error('The "Field" Component must be inside a "Form" Component.');
     }
     this.store = formStore;
-
     if (props.onChange) {
       console.warn(`Seems like you passed your own onChange to ${fieldId}, make sure you talk to the "change" injected by Form. If you are not already.`);
     }
@@ -49,7 +48,7 @@ class ComponentField extends React.Component {
       showError: props.showError,
       validate: validationFunction,
     };
-    const field = new Field(fieldId, options);
+    const field = new FieldStore(fieldId, options);
     // Bind it to this since we'll have to use it more than once
     this.field = field;
     // Add created field to our formStore
@@ -66,7 +65,7 @@ class ComponentField extends React.Component {
   }
 
   onChange(value) {
-    this.store.onChange(this.props.fieldId, value);
+    this.field.onChange(value);
   }
 
   render() {
@@ -78,7 +77,7 @@ class ComponentField extends React.Component {
       validateField,
       reset,
       touched,
-    } = this.store.fields[fieldId];
+    } = this.field;
 
     // Value and onChange passed by our Field/Form
     const fieldProperties = {
@@ -101,6 +100,6 @@ class ComponentField extends React.Component {
 
 export default props => (
   <Consumer>
-    {formStore => <ComponentField formStore={formStore} {...props} />}
+    {formStore => <Field formStore={formStore} {...props} />}
   </Consumer>
 );

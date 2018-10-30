@@ -37,6 +37,11 @@ describe('FieldStore', () => {
     expect(field.showError).toEqual(false);
   });
 
+  it('Should indicate it is a field', () => {
+    const field = new FieldStore('testField');
+    expect(field.isField).toEqual(true);
+  });
+
   it('Should change isPristine with onChange', () => {
     const field = new FieldStore('testField');
     expect(field.isPristine).toEqual(true);
@@ -66,8 +71,7 @@ describe('FieldStore', () => {
     fieldStore.validateField();
     expect(fieldStore.error).toEqual(undefined);
   });
-
-  it('OnChange should work', () => {
+  it('OnChange work', () => {
     const validateFunc = () => console.log('Valid');
     const initialValue = 'Rik';
     const fieldStore = new FieldStore('testField', {

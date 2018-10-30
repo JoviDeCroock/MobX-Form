@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import FormStore from '../../src/stores/FormStore';
 import FieldStore from '../../src/stores/FieldStore';
+import FieldSectionStore from '../../src/stores/FieldSectionStore';
 
 describe('FormStore', () => {
   // Mocked preventDefault for onSubmit
@@ -208,7 +209,6 @@ describe('FormStore', () => {
 
     await formStore.validateField('testField');
     expect(formStore.fields.testField.error).toEqual('error');
-    formStore.onChange(null, 'Riki');
     formStore.onChange('testField', 'Riki');
     expect(formStore.fields.testField.value).toEqual('Riki');
     await formStore.validateField('testField');
@@ -241,14 +241,12 @@ describe('FormStore', () => {
     }));
 
     expect(formStore.fields.testField.value).toEqual('Rik');
-    formStore.patchValues({ testField: 'patched', testField2: 'non existing' });
+    formStore.patchValues({ testField: 'patched' });
     // Non existing should patch in case of for example a new id
     expect(formStore.fields.testField.value).toEqual('patched');
-    expect(formStore.fields.testField2.value).toEqual('non existing');
     // Fail case
     formStore.patchValues('testField');
     expect(formStore.fields.testField.value).toEqual('patched');
-    expect(formStore.fields.testField2.value).toEqual('non existing');
   });
 
   it('should reset all fields', () => {
@@ -274,6 +272,17 @@ describe('FormStore', () => {
     expect(formStore.fields.testField2.value).toEqual('');
   });
 
+  it('Should add a fieldSection', async () => {
+    const handleSubmit = () => console.log('hello');
+    const formStore = new FormStore({ handleSubmit });
+    formStore.addFieldSection(new FieldSectionStore('testField'));
+    formStore.addFieldSection(new FieldStore('testField3'));
+    formStore.addFieldSection(new FieldSectionStore('testField.test2'));
+    const values = formStore.fieldValues;
+    expect(values).toHaveProperty('testField');
+    expect(values.testField).toHaveProperty('test2');
+  });
+
   it('should schemaValidate', async () => {
     const error = 'must match';
     const error2 = 'should match';
@@ -283,7 +292,6 @@ describe('FormStore', () => {
       testField2: 'Riki',
     };
     const validate = (values) => {
-      console.log(values);
       const { testField, testField2 } = values;
       if (testField !== testField2) {
         return { testField: error, testField2: error2 };

@@ -2,14 +2,14 @@ const path = require('path');
 
 module.exports = () => ({
   entry: { main: './src/index' },
-  externals: ['react', 'mobx'],
+  externals: ['react', 'mobx', 'mobx-react'],
   mode: 'production',
   module: {
     rules: [
       {
         exclude: /node_modules\.*/,
         test: /\.(js)$/,
-        use: ['babel-loader?cacheDirectory=true'],
+        use: ['babel-loader'],
       },
     ],
   },
