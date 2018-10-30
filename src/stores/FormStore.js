@@ -36,7 +36,7 @@ export default class Form {
   constructor(options = {}) {
     // Destructure our options
     const {
-      handleSubmit, initialValues, validate, onSuccess, onError,
+      handleSubmit, initialValues = {}, validate, onSuccess, onError,
     } = options;
     // handleSubmit should be passed AND be a function
     if (!handleSubmit || typeof handleSubmit !== 'function') {
