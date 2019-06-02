@@ -1,46 +1,59 @@
 import nodeResolve from 'rollup-plugin-node-resolve';
-import babel from 'rollup-plugin-babel';
+import filesize from 'rollup-plugin-filesize';
+import typescript from 'typescript';
+import typescriptPlugin from 'rollup-plugin-typescript2';
+import compiler from '@ampproject/rollup-plugin-closure-compiler';
+import { terser } from 'rollup-plugin-terser';
 import replace from 'rollup-plugin-replace';
-import commonjs from 'rollup-plugin-commonjs';
-import { uglify } from 'rollup-plugin-uglify';
-import pkg from './package.json';
 
-const env = process.env.NODE_ENV;
-
-const config = {
-  external: Object.keys(pkg.peerDependencies || {}),
-  input: 'src/index.js',
-  output: {
-    format: 'umd',
-    globals: {
-      mobx: 'mobx',
-      'mobx-react': 'mobx-react',
-      react: 'React',
+const config = [
+   {
+    input: 'src/index.ts',
+    output: {
+      file: 'dist/mobx-formstate.modern.js',
+      format: 'esm',
+      sourcemap: true,
     },
-    name: 'mobx-formstate',
-  },
-  plugins: [
-    nodeResolve(),
-    babel({
-      exclude: '**/node_modules/**',
-      runtimeHelpers: true,
-    }),
-    replace({
-      'process.env.NODE_ENV': JSON.stringify(env),
-    }),
-    commonjs(),
-  ],
-};
-
-if (env === 'production') {
-  config.plugins.push(uglify({
-    compress: {
-      pure_getters: true,
-      unsafe: true,
-      unsafe_comps: true,
-      warnings: false,
+    plugins: [
+      nodeResolve({
+        mainFields: ['module'],
+        only: ['tslib']
+      }),
+      typescriptPlugin({ typescript, tsconfig: './tsconfig.json' }),
+      filesize(),
+    ],
+   }, {
+    input: 'src/index.ts',
+    output: {
+      file: 'dist/prod/mobx-formstate.modern.js',
+      format: 'esm',
+      sourcemap: true,
     },
-  }));
-}
+    plugins: [
+      replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
+      nodeResolve({
+        mainFields: ['module'],
+        only: ['tslib']
+      }),
+      typescriptPlugin({ typescript, tsconfig: './tsconfig.json', objectHashIgnoreUnknownHack: true }),
+      compiler({ compilation_level: 'ADVANCED_OPTIMIZATIONS' }),
+      terser({
+        sourcemap: true,
+        output: { comments: false },
+        compress: {
+          keep_infinity: true,
+          pure_getters: true,
+          passes: 10,
+          global_defs: { 'process.env.NODE_ENV': 'production' }
+        },
+        warnings: true,
+        ecma: 6,
+        toplevel: true,
+        mangle: { properties: '^_' },
+      }),
+      filesize(),
+    ],
+   },
+];
 
 export default config;
